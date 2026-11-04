@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Terminal } from 'lucide-react';
 import { skillsData } from '../data/portfolioData';
 
 export default function SkillsMatrix() {
@@ -29,13 +31,20 @@ export default function SkillsMatrix() {
   };
 
   return (
-    <section id="skills" className="py-20 relative z-10 border-t-2 border-[#121316]">
+    <section id="skills" className="py-20 relative z-10 border-t-2 border-[#121316] scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]"
+        >
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm uppercase">
+              <Sparkles className="w-3.5 h-3.5 text-[#121316]" />
               <span>// 03. ENGINEERING ARSENAL</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-[#121316] mt-3 tracking-tight">
@@ -59,13 +68,17 @@ export default function SkillsMatrix() {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCategories.map(cat => (
-            <div
+          {filteredCategories.map((cat, idx) => (
+            <motion.div
               key={cat.id}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.45, delay: (idx % 3) * 0.1 }}
               className="neo-card p-6 bg-white shadow-neo-lg space-y-4 hover:-translate-y-1 transition-transform"
             >
               <div className="flex items-center justify-between pb-3 border-b-2 border-[#121316]">
@@ -78,8 +91,8 @@ export default function SkillsMatrix() {
               </div>
 
               <div className="space-y-2.5">
-                {cat.skills.map((skill, idx) => (
-                  <div key={idx} className="p-3 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm">
+                {cat.skills.map((skill, sIdx) => (
+                  <div key={sIdx} className="p-3 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs sm:text-sm font-black text-[#121316]">
                         {skill.name}
@@ -95,7 +108,7 @@ export default function SkillsMatrix() {
                 ))}
               </div>
 
-            </div>
+            </motion.div>
           ))}
         </div>
 

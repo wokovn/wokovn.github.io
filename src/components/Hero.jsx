@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, Copy, Check, Terminal, Sparkles, MapPin, GraduationCap, Flame, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight, Copy, Check, Terminal, Sparkles, MapPin, GraduationCap, Briefcase, Zap, ShieldCheck, Activity, Cpu } from 'lucide-react';
 import { personalInfo } from '../data/portfolioData';
 import ThreeScene from './ThreeScene';
 import confetti from 'canvas-confetti';
@@ -26,21 +27,28 @@ export default function Hero({ onOpenTerminal }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Column: Playful Neobrutal Statement */}
-          <div className="lg:col-span-7 space-y-6">
-            
-            {/* Top Playful Badge Cluster */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7 space-y-6"
+          >
+            {/* Top Playful Badge Cluster - ZERO EMOJIS, 100% CLEAN ICONS */}
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-[#121316] bg-neo-green font-mono text-xs font-bold shadow-neo-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-white border border-[#121316] animate-ping" />
+                <Zap className="w-3.5 h-3.5 text-[#121316]" />
                 <span>OPEN FOR SDE ROLES</span>
               </div>
 
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-[#121316] bg-neo-yellow font-mono text-xs font-bold shadow-neo-sm transform -rotate-2 hover:rotate-0 transition-transform">
-                <span>📍 HCMUS IT (GPA {personalInfo.gpa})</span>
+                <GraduationCap className="w-3.5 h-3.5 text-[#121316]" />
+                <span>HCMUS IT (GPA {personalInfo.gpa})</span>
               </div>
 
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-[#121316] bg-neo-pink text-white font-mono text-xs font-bold shadow-neo-sm transform rotate-2 hover:rotate-0 transition-transform">
-                <span>🎮 ISB VIETNAM INTERN</span>
+                <Briefcase className="w-3.5 h-3.5 text-white" />
+                <span>ISB VIETNAM INTERN</span>
               </div>
             </div>
 
@@ -64,25 +72,37 @@ export default function Hero({ onOpenTerminal }) {
             {/* Key Micro-Widgets (Informative Pills) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
               <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm">
-                <span className="text-[10px] font-mono text-slate-500 font-bold block">THROUGHPUT</span>
+                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
+                  <Activity className="w-3 h-3 text-neo-pink" />
+                  <span>THROUGHPUT</span>
+                </div>
                 <span className="text-lg font-black text-[#121316] font-mono">87.2 RPS</span>
                 <span className="text-[10px] text-slate-600 block">350 VUs (K8s HPA)</span>
               </div>
 
               <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm">
-                <span className="text-[10px] font-mono text-slate-500 font-bold block">TEST HARNESS</span>
+                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  <span>TEST HARNESS</span>
+                </div>
                 <span className="text-lg font-black text-[#121316] font-mono">5,600+</span>
                 <span className="text-[10px] text-slate-600 block">Vitest + Docker CI</span>
               </div>
 
               <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm">
-                <span className="text-[10px] font-mono text-slate-500 font-bold block">MULTI-AGENT</span>
+                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
+                  <Cpu className="w-3 h-3 text-neo-purple" />
+                  <span>MULTI-AGENT</span>
+                </div>
                 <span className="text-lg font-black text-[#121316] font-mono">5.8x Rows</span>
                 <span className="text-[10px] text-slate-600 block">SQLite Sandbox</span>
               </div>
 
               <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm">
-                <span className="text-[10px] font-mono text-slate-500 font-bold block">PII SECURITY</span>
+                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
+                  <Zap className="w-3 h-3 text-amber-500" />
+                  <span>PII SECURITY</span>
+                </div>
                 <span className="text-lg font-black text-[#121316] font-mono">&lt;200ms</span>
                 <span className="text-[10px] text-slate-600 block">Vault Wrapped DEK</span>
               </div>
@@ -124,10 +144,15 @@ export default function Hero({ onOpenTerminal }) {
               </button>
             </div>
 
-          </div>
+          </motion.div>
 
           {/* Right Column: Three.js in a Neo-Brutalist Computer Window */}
-          <div className="lg:col-span-5">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5"
+          >
             <div className="neo-card overflow-hidden bg-white shadow-neo-xl transform hover:rotate-1 transition-transform">
               
               {/* Window Header */}
@@ -157,7 +182,7 @@ export default function Hero({ onOpenTerminal }) {
               </div>
 
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -165,3 +190,4 @@ export default function Hero({ onOpenTerminal }) {
     </section>
   );
 }
+

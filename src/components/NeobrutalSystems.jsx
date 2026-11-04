@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Server, 
   Cpu, 
@@ -9,6 +10,7 @@ import {
   ArrowRight, 
   ExternalLink, 
   CheckCircle2, 
+  AlertCircle,
   ShieldCheck, 
   Zap, 
   Activity, 
@@ -16,10 +18,15 @@ import {
   Sliders, 
   Radio, 
   Flame,
-  Layers
+  Layers,
+  Globe,
+  Mic,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import { projects } from '../data/portfolioData';
 import { GithubIcon } from './Icons';
+import { playDialectAudio, stopDialectAudio } from '../utils/audioPlayer';
 
 export default function NeobrutalSystems() {
   // ArkNet States
@@ -29,7 +36,6 @@ export default function NeobrutalSystems() {
   // TTS States
   const [activeDialect, setActiveDialect] = useState(0);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [audioSpeed, setAudioSpeed] = useState('1.0x');
 
   // Vault Security States
   const [isEncrypted, setIsEncrypted] = useState(true);
@@ -39,26 +45,57 @@ export default function NeobrutalSystems() {
   const isb = projects.find(p => p.id === 'isb-systems');
   const petcarex = projects.find(p => p.id === 'petcarex');
 
+  // Stop audio if component unmounts
+  useEffect(() => {
+    return () => {
+      stopDialectAudio();
+    };
+  }, []);
+
   const handleAudioPlay = (index) => {
     if (activeDialect === index && isPlayingAudio) {
+      stopDialectAudio();
       setIsPlayingAudio(false);
       return;
     }
+
     setActiveDialect(index);
-    setIsPlayingAudio(true);
-    setTimeout(() => {
-      setIsPlayingAudio(false);
-    }, 4500);
+    const targetDialect = tts.dialects[index];
+    if (!targetDialect) return;
+
+    // Dialect specific acoustic pitch/rate configurations
+    const configs = [
+      { pitch: 1.15, rate: 1.0 },  // Bac (Ha Noi) - clear & higher pitch
+      { pitch: 0.85, rate: 0.95 }, // Trung (Hue) - deeper tone
+      { pitch: 1.0, rate: 1.05 }   // Nam (Sai Gon) - natural & dynamic
+    ];
+
+    const cfg = configs[index] || { pitch: 1.0, rate: 1.0 };
+
+    playDialectAudio(
+      targetDialect.sampleText,
+      cfg,
+      () => setIsPlayingAudio(true),
+      () => setIsPlayingAudio(false),
+      () => setIsPlayingAudio(false)
+    );
   };
 
   return (
-    <section id="systems" className="py-20 relative z-10">
+    <section id="systems" className="py-20 relative z-10 scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]"
+        >
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-cyan text-xs font-mono font-bold shadow-neo-sm uppercase">
+              <Sparkles className="w-3.5 h-3.5 text-[#121316]" />
               <span>// 01. CORE SYSTEMS ARCHITECTURE</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-[#121316] mt-3 tracking-tight">
@@ -70,21 +107,27 @@ export default function NeobrutalSystems() {
           </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-[#121316] bg-white font-mono text-xs font-bold shadow-neo-sm">
             <span className="w-2.5 h-2.5 rounded-full bg-neo-green animate-pulse" />
-            <span>4 INTERACTIVE WIDGETS</span>
+            <span>4 INTERACTIVE LABS</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* =========================================================================
             SYSTEM 1: ARKNET DISTRIBUTED PLATFORM (STRESS TEST & TOPOLOGY LAB)
         ========================================================================= */}
-        <div className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-8"
+        >
           
           {/* Card Top Titlebar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-[#121316]">
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <span className="p-2.5 rounded-xl border-2 border-[#121316] bg-neo-yellow shadow-neo-sm font-black text-lg">
-                  🌐
+                <span className="p-2.5 rounded-xl border-2 border-[#121316] bg-neo-yellow shadow-neo-sm flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-[#121316]" />
                 </span>
                 <div>
                   <h3 className="text-2xl sm:text-3xl font-black text-[#121316] tracking-tight">
@@ -116,7 +159,7 @@ export default function NeobrutalSystems() {
                 <Layers className="w-4 h-4 text-neo-pink" />
                 <span>INTERACTIVE DATAFLOW TOPOLOGY (CLICK A NODE)</span>
               </span>
-              <span className="text-slate-500 hidden sm:inline">Inspect decoupled responsibilities</span>
+              <span className="text-slate-500 hidden sm:inline">Inspect decoupled pipeline responsibilities</span>
             </div>
 
             {/* 6 Step Interactive Pills */}
@@ -157,14 +200,17 @@ export default function NeobrutalSystems() {
             </div>
           </div>
 
-          {/* Interactive Stress Test Telemetry Switcher */}
-          <div className="p-6 rounded-2xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo space-y-6">
+          {/* =========================================================================
+              STRESS TEST TELEMETRY (DEDICATED #telemetry TARGET)
+          ========================================================================= */}
+          <div id="telemetry" className="p-6 rounded-2xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo space-y-6 scroll-mt-24">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-[#121316] bg-neo-green font-mono text-[11px] font-bold">
-                  ⚡ 350 VIRTUAL USERS (VUs) STRESS BENCHMARK
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#121316] bg-neo-green font-mono text-[11px] font-bold">
+                  <Zap className="w-3 h-3 text-[#121316] fill-[#121316]" />
+                  <span>350 VIRTUAL USERS (VUs) STRESS BENCHMARK</span>
                 </span>
-                <h4 className="text-lg font-black text-[#121316] mt-1">
+                <h4 className="text-lg sm:text-xl font-black text-[#121316] mt-1.5">
                   Baseline Ceiling vs Kubernetes Dynamic Autoscaling
                 </h4>
               </div>
@@ -197,7 +243,9 @@ export default function NeobrutalSystems() {
               <div className="p-4 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-2">
                 <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-600">
                   <span>THROUGHPUT</span>
-                  <span>{isHpaActive ? '2.42x BOOST' : 'BOTTLENECK'}</span>
+                  <span className={`px-1.5 py-0.5 rounded border border-[#121316] text-[10px] ${isHpaActive ? 'bg-neo-yellow' : 'bg-slate-200'}`}>
+                    {isHpaActive ? '2.42x BOOST' : 'BOTTLENECK'}
+                  </span>
                 </div>
                 <div className="text-3xl font-black font-mono text-[#121316]">
                   {isHpaActive ? '87.2 RPS' : '36.0 RPS'}
@@ -208,35 +256,59 @@ export default function NeobrutalSystems() {
                     className={`h-full transition-all duration-500 ${isHpaActive ? 'bg-neo-green w-[88%]' : 'bg-slate-400 w-[36%]'}`}
                   />
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 block">
-                  {isHpaActive ? '✔ 158,000+ requests handled' : '✖ CPU saturation ceiling'}
-                </span>
+                <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold">
+                  {isHpaActive ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span className="text-emerald-700">158,000+ requests handled</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-3.5 h-3.5 text-neo-pink flex-shrink-0" />
+                      <span className="text-rose-700">CPU saturation ceiling</span>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Metric 2: Error Rate */}
               <div className="p-4 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-2">
                 <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-600">
                   <span>API ERROR RATE</span>
-                  <span>{isHpaActive ? 'STABLE' : 'FAILS'}</span>
+                  <span className={`px-1.5 py-0.5 rounded border border-[#121316] text-[10px] ${isHpaActive ? 'bg-neo-green' : 'bg-neo-pink text-white'}`}>
+                    {isHpaActive ? 'STABLE' : 'FAILS'}
+                  </span>
                 </div>
-                <div className={`text-3xl font-black font-mono ${isHpaActive ? 'text-emerald-600' : 'text-neo-pink'}`}>
+                <div className={`text-3xl font-black font-mono ${isHpaActive ? 'text-emerald-600' : 'text-rose-600'}`}>
                   {isHpaActive ? '0.8%' : '28.4%'}
                 </div>
                 <div className="w-full h-3 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
                   <div 
-                    className={`h-full transition-all duration-500 ${isHpaActive ? 'bg-emerald-500 w-[8%]' : 'bg-neo-pink w-[84%]'}`}
+                    className={`h-full transition-all duration-500 ${isHpaActive ? 'bg-emerald-500 w-[8%]' : 'bg-rose-500 w-[84%]'}`}
                   />
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 block">
-                  {isHpaActive ? '✔ Slashed failures by >3x' : '✖ Connection dropouts'}
-                </span>
+                <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold">
+                  {isHpaActive ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span className="text-emerald-700">Slashed failures by &gt;3x</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-3.5 h-3.5 text-neo-pink flex-shrink-0" />
+                      <span className="text-rose-700">Connection dropouts</span>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Metric 3: Media Upload */}
               <div className="p-4 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-2">
                 <div className="flex justify-between items-center text-xs font-mono font-bold text-slate-600">
                   <span>MEDIA SUCCESS</span>
-                  <span>{isHpaActive ? 'BULLMQ' : 'OVERLOAD'}</span>
+                  <span className={`px-1.5 py-0.5 rounded border border-[#121316] text-[10px] ${isHpaActive ? 'bg-neo-cyan' : 'bg-amber-200'}`}>
+                    {isHpaActive ? 'BULLMQ' : 'OVERLOAD'}
+                  </span>
                 </div>
                 <div className="text-3xl font-black font-mono text-[#121316]">
                   {isHpaActive ? '86.2%' : '34.5%'}
@@ -246,27 +318,43 @@ export default function NeobrutalSystems() {
                     className={`h-full transition-all duration-500 ${isHpaActive ? 'bg-neo-cyan w-[86%]' : 'bg-amber-400 w-[34%]'}`}
                   />
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 block">
-                  {isHpaActive ? '✔ 9 BullMQ worker queues' : '✖ Worker concurrency lock'}
-                </span>
+                <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold">
+                  {isHpaActive ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span className="text-emerald-700">9 BullMQ worker queues</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                      <span className="text-amber-700">Worker concurrency lock</span>
+                    </>
+                  )}
+                </div>
               </div>
 
             </div>
 
           </div>
 
-        </div>
+        </motion.div>
 
         {/* =========================================================================
             SYSTEM 2: VIETNAMESE NEURAL TTS & NEWS AI (TACTILE AUDIO DECK LAB)
         ========================================================================= */}
-        <div className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.5 }}
+          className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-8"
+        >
           
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-[#121316]">
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <span className="p-2.5 rounded-xl border-2 border-[#121316] bg-neo-pink text-white shadow-neo-sm font-black text-lg">
-                  🎙️
+                <span className="p-2.5 rounded-xl border-2 border-[#121316] bg-neo-pink text-white shadow-neo-sm flex items-center justify-center">
+                  <Mic className="w-6 h-6 text-[#121316]" />
                 </span>
                 <div>
                   <h3 className="text-2xl sm:text-3xl font-black text-[#121316] tracking-tight">
@@ -304,7 +392,7 @@ export default function NeobrutalSystems() {
 
               {/* Equalizer animation when playing */}
               {isPlayingAudio ? (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-pink text-white text-xs font-mono font-bold animate-pulse">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-pink text-white text-xs font-mono font-bold animate-pulse">
                   <div className="flex items-end gap-1 h-3.5">
                     <span className="w-1 bg-white h-3.5 animate-bounce"></span>
                     <span className="w-1 bg-white h-2 animate-pulse"></span>
@@ -312,11 +400,12 @@ export default function NeobrutalSystems() {
                     <span className="w-1 bg-white h-1 animate-pulse"></span>
                     <span className="w-1 bg-white h-3.5 animate-bounce"></span>
                   </div>
-                  <span>STREAMING NEURAL AUDIO...</span>
+                  <span>PLAYING DIALECT AUDIO...</span>
                 </div>
               ) : (
-                <span className="text-xs font-mono text-slate-500 font-bold">
-                  Click 'Listen' to test regional acoustic models
+                <span className="text-xs font-mono text-slate-500 font-bold flex items-center gap-1.5">
+                  <Volume2 className="w-4 h-4 text-slate-700" />
+                  <span>Click 'Listen' to trigger regional speech synthesis</span>
                 </span>
               )}
             </div>
@@ -375,7 +464,8 @@ export default function NeobrutalSystems() {
             {/* Pipeline Step Overview */}
             <div className="p-4 rounded-xl border-2 border-[#121316] bg-white text-xs font-mono font-bold flex flex-wrap items-center justify-between gap-3 shadow-neo-sm">
               <span className="flex items-center gap-2">
-                <span>⚡ RESEARCH DATASET:</span>
+                <Zap className="w-3.5 h-3.5 text-[#121316]" />
+                <span>RESEARCH DATASET:</span>
                 <span className="bg-neo-green px-2 py-0.5 rounded border border-[#121316]">
                   27.1 Hours (14,475 pairs)
                 </span>
@@ -396,7 +486,7 @@ export default function NeobrutalSystems() {
 
           </div>
 
-        </div>
+        </motion.div>
 
         {/* =========================================================================
             SYSTEM 3 & 4: ISB MULTI-AGENT SECURITY & PETCAREX DATABASE LAB
@@ -404,13 +494,19 @@ export default function NeobrutalSystems() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* ISB Vietnam Card */}
-          <div className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-6 flex flex-col justify-between">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-6 flex flex-col justify-between"
+          >
             <div className="space-y-6">
               
               <div className="flex items-center justify-between pb-4 border-b-2 border-[#121316]">
                 <div className="flex items-center gap-2.5">
-                  <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-purple/40 font-bold text-base">
-                    🤖
+                  <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-purple/40 font-bold text-base flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-[#121316]" />
                   </span>
                   <div>
                     <h3 className="text-xl font-black text-[#121316]">
@@ -444,8 +540,9 @@ export default function NeobrutalSystems() {
                   <div className="font-bold text-[#121316] break-all">
                     {isEncrypted ? 'vault:v1:7kX9q2pL0m... (Wrapped DEK)' : 'email: "khoa@isb.com", ssn: "079205..."'}
                   </div>
-                  <div className="text-[10px] text-emerald-600 font-bold pt-1">
-                    ✔ Exact-match queries run over HMAC Blind Index without decrypting database.
+                  <div className="text-[10px] text-emerald-700 font-bold pt-1 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <span>Exact-match queries run over HMAC Blind Index without decrypting database.</span>
                   </div>
                 </div>
               </div>
@@ -474,16 +571,22 @@ export default function NeobrutalSystems() {
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* PetCareX Card */}
-          <div className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-6 flex flex-col justify-between">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="neo-card p-6 sm:p-8 bg-white shadow-neo-xl space-y-6 flex flex-col justify-between"
+          >
             <div className="space-y-6">
               
               <div className="flex items-center justify-between pb-4 border-b-2 border-[#121316]">
                 <div className="flex items-center gap-2.5">
-                  <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-green font-bold text-base">
-                    🐾
+                  <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-green font-bold text-base flex items-center justify-center">
+                    <Database className="w-5 h-5 text-[#121316]" />
                   </span>
                   <div>
                     <h3 className="text-xl font-black text-[#121316]">
@@ -523,10 +626,10 @@ export default function NeobrutalSystems() {
                   <div>
                     <div className="flex justify-between text-[11px] mb-1">
                       <span>Random UUID (v4):</span>
-                      <span className="font-bold text-neo-pink">74% Fragmentation</span>
+                      <span className="font-bold text-rose-600">74% Fragmentation</span>
                     </div>
                     <div className="w-full h-3 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-neo-pink w-[74%]" />
+                      <div className="h-full bg-rose-500 w-[74%]" />
                     </div>
                   </div>
                 </div>
@@ -552,7 +655,7 @@ export default function NeobrutalSystems() {
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
 
         </div>
 

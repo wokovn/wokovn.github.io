@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, X, CornerDownLeft } from 'lucide-react';
+import { Terminal, X, CornerDownLeft, Sparkles, CheckCircle2 } from 'lucide-react';
 import { personalInfo, coreMetrics, projects } from '../data/portfolioData';
 import confetti from 'canvas-confetti';
 
 export default function TerminalHUD({ isOpen, onClose }) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
-    { type: 'system', text: '⚡ wokovn Retro Terminal v3.0 [NEOBRUTAL EDITION]' },
+    { type: 'system', text: '[SYS] wokovn Retro Terminal v3.0 [NEOBRUTAL EDITION]' },
     { type: 'system', text: 'Type "help" to view commands or "hire" for celebration.' }
   ]);
   const inputRef = useRef(null);
@@ -85,7 +85,7 @@ Specialties : Distributed Systems, Multi-Agent AI (MCP), Redis Lua, BullMQ, K8s 
       case 'metrics':
         newHistory.push({
           type: 'response',
-          text: coreMetrics.map(m => `✦ ${m.label}: ${m.value} (${m.detail})`).join('\n')
+          text: coreMetrics.map(m => `> ${m.label}: ${m.value} (${m.detail})`).join('\n')
         });
         break;
 
@@ -120,7 +120,7 @@ GITHUB   : ${personalInfo.github}`
         });
         newHistory.push({
           type: 'response',
-          text: `🎉 ACCESS GRANTED! Let's build together:
+          text: `[SUCCESS] ACCESS GRANTED! Let's build together:
 Drop an email to ${personalInfo.email} or call ${personalInfo.phone}.`
         });
         break;
