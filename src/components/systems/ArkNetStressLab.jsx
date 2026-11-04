@@ -39,33 +39,33 @@ export default function ArkNetStressLab({ arknet }) {
   const stages = [
     {
       id: 0,
-      badge: "GIAI ĐOẠN 01",
+      badge: "STAGE 01",
       title: "Fixed Replicas (2 Pods)",
-      statusLabel: "NGHẼN TÀI NGUYÊN • 28.4% LỖI",
+      statusLabel: "RESOURCE SATURATION • 28.4% ERRORS",
       statusColor: "bg-rose-500 text-white",
-      incidentTitle: "Quá tải đồng thời (350 VUs)",
-      problem: "2 pod API cố định bị nghẽn CPU ở mức 100% khi nhận 350 người dùng đồng thời. 28.4% requests bị drop kết nối do tràn hàng đợi.",
-      resolution: "Hệ thống thiếu cơ chế co giãn tức thời, cần mở rộng ngang tự động theo chỉ số CPU/RAM thực tế."
+      incidentTitle: "Traffic Surge Overload (350 VUs)",
+      problem: "2 static API pods hit 100% CPU saturation under 350 concurrent users. 28.4% of incoming requests dropped due to connection queue overflow.",
+      resolution: "Static instances fail under bursts. Horizontal Pod Autoscaler (HPA) required to autoscale replicas based on live CPU/memory metrics."
     },
     {
       id: 1,
-      badge: "GIAI ĐOẠN 02",
+      badge: "STAGE 02",
       title: "Kubernetes HPA (10 Pods)",
-      statusLabel: "TỰ ĐỘNG BUNG 10 PODS • TĂNG 242%",
+      statusLabel: "10 REPLICAS AUTOSCALED • +242% BOOST",
       statusColor: "bg-neo-green text-[#121316]",
-      incidentTitle: "Tự động co giãn theo tải thực tế",
-      problem: "Cấu hình Horizontal Pod Autoscaler (HPA) giám sát CPU/RAM qua Metrics Server, kích hoạt mở rộng từ 2 lên 10 pods trong vài giây.",
-      resolution: "Thông lượng tăng 2.42x (87.2 RPS), tỷ lệ lỗi triệt tiêu về 0.8%, xử lý an toàn hơn 158,000 lượt requests."
+      incidentTitle: "Elastic Workload Autoscaling",
+      problem: "Horizontal Pod Autoscaler monitors CPU/RAM via Kubernetes Metrics Server, scaling from 2 to 10 pods within seconds.",
+      resolution: "Throughput boosted 2.42x to 87.2 RPS, error rate dropped to 0.8%, safely serving 158,000+ total requests."
     },
     {
       id: 2,
-      badge: "GIAI ĐOẠN 03",
+      badge: "STAGE 03",
       title: "BullMQ + Redis Lua",
-      statusLabel: "PHÂN TÁCH XỬ LÝ NỀN",
+      statusLabel: "DECOUPLED ASYNC WORKERS",
       statusColor: "bg-neo-yellow text-[#121316]",
-      incidentTitle: "Phân tách tác vụ nặng khỏi luồng chính",
-      problem: "Tác vụ đồng bộ bài viết, like/comment, và xử lý media nếu xử lý trực tiếp trên HTTP thread sẽ gây block event-loop.",
-      resolution: "Tách sang 9 worker queues độc lập qua BullMQ; tính điểm xu hướng suy giảm theo thời gian qua Redis Lua nguyên tử (<1ms)."
+      incidentTitle: "Isolating Heavy Workloads from Main Thread",
+      problem: "Feed fanout, ranking computations, and media transcoding on the HTTP thread would block the Node.js event loop.",
+      resolution: "Offloaded heavy tasks to 9 BullMQ worker queues; executed atomic time-decay ranking scripts directly in Redis via Lua (<1ms)."
     }
   ];
 
@@ -128,7 +128,7 @@ export default function ArkNetStressLab({ arknet }) {
                   className="neo-btn-secondary text-xs py-1.5 px-3 self-start sm:self-auto"
                 >
                   <GithubIcon className="w-4 h-4" />
-                  <span>MÃ NGUỒN</span>
+                  <span>SOURCE CODE</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
@@ -174,7 +174,7 @@ export default function ArkNetStressLab({ arknet }) {
               <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 px-0.5">
                 <span className="flex items-center gap-1.5 text-[#121316]">
                   <Activity className="w-3.5 h-3.5 text-neo-pink" />
-                  <span>TIẾN TRÌNH KHẢO SÁT HỆ THỐNG: GIAI ĐOẠN 0{arkStage + 1} / 03</span>
+                  <span>BENCHMARK TIMELINE: STAGE 0{arkStage + 1} / 03</span>
                 </span>
                 <span>{stages[arkStage].statusLabel}</span>
               </div>
@@ -203,7 +203,7 @@ export default function ArkNetStressLab({ arknet }) {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-2 border-b border-[#121316]/20 pb-1.5">
                         <span className="text-[9px] font-mono font-black text-slate-600 uppercase">
-                          BÁO CÁO PHÂN TÍCH SỰ CỐ
+                          OPERATIONAL INCIDENT ANALYSIS
                         </span>
                         <span className={`px-2 py-0.5 rounded border border-[#121316] font-mono text-[9px] font-black shadow-neo-xs ${stages[arkStage].statusColor}`}>
                           {stages[arkStage].badge}
@@ -217,7 +217,7 @@ export default function ArkNetStressLab({ arknet }) {
                     <div className="space-y-2 text-xs">
                       <div className="p-2.5 rounded-lg bg-white border border-[#121316]">
                         <span className="font-mono text-[9px] font-black text-slate-500 block uppercase">
-                          HIỆN TRẠNG / NGUYÊN NHÂN
+                          ROOT CAUSE / BOTTLENECK
                         </span>
                         <p className="text-slate-800 font-medium text-[11px] mt-0.5 leading-relaxed">
                           {stages[arkStage].problem}
@@ -226,7 +226,7 @@ export default function ArkNetStressLab({ arknet }) {
 
                       <div className="p-2.5 rounded-lg bg-white border border-[#121316]">
                         <span className="font-mono text-[9px] font-black text-slate-500 block uppercase">
-                          GIẢI PHÁP &amp; KẾT QUẢ ĐO LƯỜNG
+                          RESOLUTION &amp; BENCHMARK IMPACT
                         </span>
                         <p className="text-slate-900 font-bold text-[11px] mt-0.5 leading-relaxed">
                           {stages[arkStage].resolution}
@@ -261,7 +261,7 @@ export default function ArkNetStressLab({ arknet }) {
                         <div className="flex items-center justify-between text-xs font-mono font-bold">
                           <span className="text-rose-700 flex items-center gap-1.5 font-black text-[11px]">
                             <AlertCircle className="w-3.5 h-3.5 text-rose-600 animate-pulse" />
-                            <span>2 MÁY CHỦ CỐ ĐỊNH (CPU 100% QUÁ TẢI)</span>
+                            <span>2 STATIC REPLICAS (100% CPU SATURATION)</span>
                           </span>
                           <span className="px-1.5 py-0.5 rounded border border-rose-600 bg-rose-100 text-rose-800 font-bold text-[9px]">
                             HPA: DISABLED
@@ -281,7 +281,7 @@ export default function ArkNetStressLab({ arknet }) {
                             <div className="w-full h-1.5 rounded-full bg-rose-200 overflow-hidden">
                               <div className="w-full h-full bg-rose-600" />
                             </div>
-                            <span className="text-[9px] text-rose-700 block font-bold truncate">Tràn kết nối (Dropped)</span>
+                            <span className="text-[9px] text-rose-700 block font-bold truncate">Queue overflow (Dropped)</span>
                           </motion.div>
 
                           <motion.div 
@@ -296,7 +296,7 @@ export default function ArkNetStressLab({ arknet }) {
                             <div className="w-full h-1.5 rounded-full bg-rose-200 overflow-hidden">
                               <div className="w-full h-full bg-rose-600" />
                             </div>
-                            <span className="text-[9px] text-rose-700 block font-bold truncate">Độ trễ 3s - 12s</span>
+                            <span className="text-[9px] text-rose-700 block font-bold truncate">Latency 3s - 12s</span>
                           </motion.div>
                         </div>
                       </div>
@@ -311,30 +311,30 @@ export default function ArkNetStressLab({ arknet }) {
                           <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
                             <div className="w-[36%] h-full bg-slate-400" />
                           </div>
-                          <span className="text-[9px] text-rose-700 font-bold block truncate">Chạm trần CPU</span>
+                          <span className="text-[9px] text-rose-700 font-bold block truncate">CPU Saturated</span>
                         </div>
 
                         <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1">
                           <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>LỖI API</span>
+                            <span>ERROR RATE</span>
                             <span className="text-rose-600 font-black text-[9px]">CRITICAL</span>
                           </div>
                           <div className="text-xl font-black text-rose-600">28.4%</div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
                             <div className="w-[84%] h-full bg-rose-500" />
                           </div>
-                          <span className="text-[9px] text-rose-700 font-bold block truncate">Drop 1/3 requests</span>
+                          <span className="text-[9px] text-rose-700 font-bold block truncate">Dropped 1/3 requests</span>
                         </div>
 
                         <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1">
                           <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>MEDIA JOB</span>
+                            <span>MEDIA JOBS</span>
                           </div>
                           <div className="text-xl font-black text-amber-600">34.5%</div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
                             <div className="w-[35%] h-full bg-amber-400" />
                           </div>
-                          <span className="text-[9px] text-slate-600 font-bold block truncate">Nghẽn hàng đợi</span>
+                          <span className="text-[9px] text-slate-600 font-bold block truncate">Queue backlog</span>
                         </div>
                       </div>
                     </motion.div>
@@ -355,7 +355,7 @@ export default function ArkNetStressLab({ arknet }) {
                         <div className="flex items-center justify-between text-xs font-mono font-bold">
                           <span className="text-emerald-900 flex items-center gap-1.5 font-black text-[11px]">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>K8S HPA TỰ ĐỘNG BUNG 10 REPLICAS</span>
+                            <span>K8S HPA AUTOSCALED (10 REPLICAS)</span>
                           </span>
                           <span className="px-1.5 py-0.5 rounded border border-[#121316] bg-neo-green text-[9px] font-black">
                             10 REPLICAS ACTIVE
@@ -406,7 +406,7 @@ export default function ArkNetStressLab({ arknet }) {
                               className="h-full bg-neo-green" 
                             />
                           </div>
-                          <span className="text-[9px] text-emerald-700 font-bold block truncate">158K+ reqs mượt mà</span>
+                          <span className="text-[9px] text-emerald-700 font-bold block truncate">158K+ requests served</span>
                         </motion.div>
 
                         <motion.div 
@@ -416,7 +416,7 @@ export default function ArkNetStressLab({ arknet }) {
                           className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1"
                         >
                           <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>LỖI API</span>
+                            <span>ERROR RATE</span>
                             <span className="bg-neo-green px-1 rounded text-[8px] font-black">MINIMAL</span>
                           </div>
                           <div className="text-xl font-black text-emerald-600">0.8%</div>
@@ -428,7 +428,7 @@ export default function ArkNetStressLab({ arknet }) {
                               className="h-full bg-emerald-500" 
                             />
                           </div>
-                          <span className="text-[9px] text-emerald-700 font-bold block truncate">Giảm lỗi hơn 35x</span>
+                          <span className="text-[9px] text-emerald-700 font-bold block truncate">35x error reduction</span>
                         </motion.div>
 
                         <motion.div 
@@ -438,7 +438,7 @@ export default function ArkNetStressLab({ arknet }) {
                           className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1"
                         >
                           <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>MEDIA JOB</span>
+                            <span>MEDIA JOBS</span>
                             <span className="text-neo-cyan font-black text-[9px]">STABLE</span>
                           </div>
                           <div className="text-xl font-black text-[#121316]">86.2%</div>
@@ -450,7 +450,7 @@ export default function ArkNetStressLab({ arknet }) {
                               className="h-full bg-neo-cyan" 
                             />
                           </div>
-                          <span className="text-[9px] text-slate-700 font-bold block truncate">Worker xử lý chuẩn</span>
+                          <span className="text-[9px] text-slate-700 font-bold block truncate">Realtime processing</span>
                         </motion.div>
                       </div>
                     </motion.div>
@@ -470,7 +470,7 @@ export default function ArkNetStressLab({ arknet }) {
                         <div className="flex items-center justify-between text-xs font-mono font-bold">
                           <span className="text-[#121316] flex items-center gap-1.5 text-[11px]">
                             <Layers className="w-3.5 h-3.5 text-neo-pink" />
-                            <span>9 QUEUES NỀN TÁCH BIỆT (CLICK TỪNG BƯỚC)</span>
+                            <span>9 DECOUPLED WORKER QUEUES (SELECT STEP)</span>
                           </span>
                           <span className="text-slate-500 text-[10px] hidden sm:inline">Non-blocking Event Loop</span>
                         </div>
@@ -546,4 +546,3 @@ return new_score`}
     </div>
   );
 }
-

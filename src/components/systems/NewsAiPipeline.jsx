@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Bot, 
-  Cpu, 
-  Zap, 
   ExternalLink, 
-  CheckCircle2, 
-  Sparkles,
-  Layers,
-  ArrowRight
+  Layers
 } from 'lucide-react';
 import { GithubIcon } from '../Icons';
 
@@ -18,27 +13,27 @@ export default function NewsAiPipeline({ tts }) {
   const pipelineSteps = [
     {
       step: "01. CRAWLER",
-      title: "Thu thập tin tức đa nguồn",
+      title: "Multi-Source News Scraping",
       tech: "Brave Search API + Puppeteer Headless",
-      desc: "Trích xuất bài viết thời sự, kinh tế tự động, làm sạch HTML rác và loại bỏ quảng cáo trong <1.2s."
+      desc: "Automated extraction of current affairs articles, sanitizing raw DOM and stripping ad boilerplate in <1.2s."
     },
     {
       step: "02. LLM SUMMARY",
-      title: "Tóm tắt ngữ cảnh chuẩn xác",
+      title: "Context-Aware Summarization",
       tech: "Google Gemini API (Structured JSON)",
-      desc: "Sinh bản tin cô đọng 3-4 câu, chuẩn hóa dấu câu tiếng Việt và định dạng ngữ điệu trước khi đưa vào mô hình giọng nói."
+      desc: "Generates concise 3-4 sentence summaries with structured schema and phonetic normalization prior to synthesis."
     },
     {
       step: "03. GPU INFERENCE",
-      title: "Tổng hợp giọng nói Neural vnTTS",
+      title: "Neural Voice Synthesis (vnTTS)",
       tech: "PyTorch (CUDA) + FastAPI",
-      desc: "Mô hình TTS xử lý mel-spectrogram và vocoder trên GPU, tạo luồng âm thanh tự nhiên chuẩn âm sắc vùng miền."
+      desc: "End-to-end mel-spectrogram and neural vocoder inference on CUDA GPUs with regional dialect adaptability."
     },
     {
       step: "04. EDGE DELIVERY",
-      title: "Chuyển mã & Phân phối âm thanh",
+      title: "Audio Transcoding & CDN Delivery",
       tech: "FFmpeg Pipeline + Supabase CDN",
-      desc: "Nén WAV sang MP3 (64kbit/s) giảm 78% dung lượng truyền tải, lưu trữ và streaming tức thì qua CDN public bucket."
+      desc: "Transcodes WAV to MP3 (64kbps) reducing bandwidth by 78%, storing and streaming audio via edge buckets."
     }
   ];
 
@@ -79,7 +74,7 @@ export default function NewsAiPipeline({ tts }) {
             className="neo-btn-secondary text-xs py-1.5 px-3 self-start sm:self-auto"
           >
             <GithubIcon className="w-4 h-4" />
-            <span>MÃ NGUỒN</span>
+            <span>SOURCE CODE</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
         )}
@@ -88,10 +83,10 @@ export default function NewsAiPipeline({ tts }) {
       {/* Pipeline Description Box */}
       <div className="p-3.5 rounded-xl border-2 border-[#121316] bg-neo-cyan/10 space-y-1">
         <span className="text-[10px] font-mono font-black text-[#121316] uppercase block">
-          KIẾN TRÚC TỰ ĐỘNG HÓA TẬN DỤNG GPU:
+          GPU-ACCELERATED AUTOMATION ARCHITECTURE:
         </span>
         <p className="text-xs text-slate-800 font-medium leading-relaxed">
-          Tự động hóa toàn diện quy trình từ bóc tách báo điện tử, tóm tắt ngữ cảnh bằng Gemini AI đến tổng hợp giọng đọc tiếng Việt trên hạ tầng CUDA. Triển khai cơ chế <strong>Job-based polling trên FastAPI</strong> để xử lý bất đồng bộ các đoạn audio dài mà không gây block luồng Node.js chính.
+          End-to-end automated news pipeline: Scraping multi-source articles, generating structured context-aware briefs via Gemini, and running CUDA-accelerated neural voice inference. Implements <strong>job-based polling on FastAPI</strong> to handle long audio generation asynchronously without blocking the Node.js event loop.
         </p>
       </div>
 
@@ -100,7 +95,7 @@ export default function NewsAiPipeline({ tts }) {
         <div className="flex items-center justify-between text-xs font-mono font-bold">
           <span className="flex items-center gap-1.5 text-[#121316]">
             <Layers className="w-4 h-4 text-neo-pink" />
-            <span>4 GIAI ĐOẠN XỬ LÝ (CHỌN TỪNG BƯỚC ĐỂ XEM THÔNG SỐ)</span>
+            <span>4 PROCESSING STAGES (SELECT STEP FOR SPECS)</span>
           </span>
           <span className="text-slate-500 hidden sm:inline">Decoupled FastAPI Architecture</span>
         </div>
@@ -137,15 +132,15 @@ export default function NewsAiPipeline({ tts }) {
       {/* Key Operational Metrics Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm flex items-center justify-between">
-          <span className="text-slate-600 font-bold text-[11px]">DATASET TIẾNG VIỆT:</span>
+          <span className="text-slate-600 font-bold text-[11px]">SPEECH DATASET:</span>
           <span className="bg-neo-green px-2 py-0.5 rounded border border-[#121316] font-black text-[11px]">
-            27.1h (14,475 mẫu)
+            27.1h (14,475 samples)
           </span>
         </div>
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm flex items-center justify-between">
-          <span className="text-slate-600 font-bold text-[11px]">XỬ LÝ ĐA NHIỆM:</span>
+          <span className="text-slate-600 font-bold text-[11px]">CONCURRENCY:</span>
           <span className="bg-neo-cyan px-2 py-0.5 rounded border border-[#121316] font-black text-[11px]">
-            Job-based Polling (Tránh Timeout)
+            Job-based Polling (No Timeout)
           </span>
         </div>
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm flex items-center justify-between">
@@ -167,4 +162,3 @@ export default function NewsAiPipeline({ tts }) {
     </motion.div>
   );
 }
-

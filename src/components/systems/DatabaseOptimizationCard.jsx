@@ -1,11 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Database, 
-  CheckCircle2, 
-  ExternalLink,
-  Zap,
-  Activity
+  Database
 } from 'lucide-react';
 import { GithubIcon } from '../Icons';
 
@@ -49,10 +45,10 @@ export default function DatabaseOptimizationCard({ petcarex }) {
         {/* Architecture Impact Box */}
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-green/10 space-y-1">
           <span className="text-[10px] font-mono font-black text-[#121316] uppercase block">
-            CHẤT LƯỢNG MÃ NGUỒN &amp; TỐI ƯU CƠ SỞ DỮ LIỆU:
+            CODE QUALITY &amp; DATABASE OPTIMIZATION:
           </span>
           <p className="text-xs text-slate-800 font-medium leading-relaxed">
-            Thiết kế kiểm thử tự động toàn diện với hơn <strong>5,600+ test cases</strong>, cắt giảm 50% thời gian chạy CI pipeline (từ 352s xuống 162s) và áp dụng Sequential UUID triệt tiêu phân mảnh đĩa.
+            Engineered an automated test harness with over <strong>5,600+ test cases</strong>, cutting CI pipeline runtime by 50% (from 352s to 162s) and eliminating B-Tree index fragmentation via Sequential COMB UUIDs.
           </p>
         </div>
 
@@ -65,8 +61,8 @@ export default function DatabaseOptimizationCard({ petcarex }) {
           <div className="space-y-2 text-xs font-mono">
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span>Sequential UUID (Khoa triển khai):</span>
-                <span className="font-bold text-emerald-600">0% Phân mảnh B-Tree</span>
+                <span>Sequential COMB UUID (Optimized):</span>
+                <span className="font-bold text-emerald-600">0% B-Tree Page Splits</span>
               </div>
               <div className="w-full h-2.5 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
                 <div className="h-full bg-neo-green w-[98%]" />
@@ -75,8 +71,8 @@ export default function DatabaseOptimizationCard({ petcarex }) {
 
             <div>
               <div className="flex justify-between text-[11px] mb-1">
-                <span>Random UUID (Mặc định):</span>
-                <span className="font-bold text-rose-600">74% Lãng phí IOPS &amp; RAM</span>
+                <span>Random UUIDv4 (Standard):</span>
+                <span className="font-bold text-rose-600">74% IOPS &amp; RAM Waste</span>
               </div>
               <div className="w-full h-2.5 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
                 <div className="h-full bg-rose-500 w-[74%]" />
@@ -88,11 +84,11 @@ export default function DatabaseOptimizationCard({ petcarex }) {
         {/* Test Harness Stats */}
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-yellow/20 space-y-1 text-xs font-mono">
           <div className="font-bold text-[#121316] flex items-center justify-between">
-            <span>5,600+ BÀI KIỂM THỬ TỰ ĐỘNG</span>
+            <span>5,600+ AUTOMATED TEST SUITE</span>
             <span className="text-emerald-700 font-black">2x SPEEDUP</span>
           </div>
           <p className="text-slate-700 text-[11px] pt-0.5 leading-relaxed">
-            Docker test containers chạy song song cô lập dữ liệu từng worker, cắt thời gian deploy từ 352s xuống 162s.
+            Parallel Docker test containers isolate worker environments, cutting full pipeline execution from 352s down to 162s.
           </p>
         </div>
 
@@ -109,4 +105,3 @@ export default function DatabaseOptimizationCard({ petcarex }) {
     </motion.div>
   );
 }
-

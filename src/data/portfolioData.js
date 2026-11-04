@@ -79,7 +79,7 @@ return new_score`
   {
     id: "vietnamese-tts",
     title: "News Summary & Vietnamese Regional TTS System",
-    tagline: "Full-Stack AI & GPU Voice Synthesis with dialect support (Bắc, Trung, Nam)",
+    tagline: "Full-Stack AI & GPU Voice Synthesis with regional dialect adaptation",
     repo: "https://github.com/wokovn/Project-LT-ML-23KHDL1-HCMUS",
     category: "AI & Audio Engineering",
     tags: ["React 19", "Node.js", "Express", "FastAPI", "Python", "PyTorch (CUDA)", "Gemini API", "Puppeteer", "FFmpeg", "Supabase"],
@@ -91,11 +91,6 @@ return new_score`
       { step: "FastAPI Engine", desc: "GPU-accelerated PyTorch (CUDA) vnTTS neural inference server" },
       { step: "Transcoder", desc: "FFmpeg pipeline converting WAV to MP3 audio (64k)" },
       { step: "Audio Storage", desc: "Supabase public audio buckets with storage delivery" }
-    ],
-    dialects: [
-      { name: "Giọng Bắc (Hà Nội)", sampleText: "Chào mừng bạn đến với hệ thống tóm tắt tin tức tự động và tổng hợp giọng nói tiếng Việt.", pitch: "Trong trẻo, chuẩn âm sắc" },
-      { name: "Giọng Trung (Huế)", sampleText: "Dạ thưa quý vị, đây là bản tin tổng hợp kinh tế xã hội được AI xử lý tức thì.", pitch: "Trầm ấm, âm sắc đặc trưng miền Trung" },
-      { name: "Giọng Nam (Sài Gòn)", sampleText: "Xin chào cả nhà, hôm nay công nghệ AI đã có thể chuyển toàn bộ bài báo thành giọng nói siêu mượt.", pitch: "Phóng khoáng, tự nhiên, gần gũi" }
     ]
   },
   {
@@ -197,31 +192,31 @@ export const skillsData = {
           name: "TypeScript & Node.js (Express 5)", 
           tag: "Production Core", 
           project: "ArkNet & ISB Vietnam", 
-          desc: "Kiến trúc stateless modular backend, xác thực bảo mật, streaming và chịu tải 87.2 RPS trên Kubernetes." 
+          desc: "Architected stateless modular backend, secure authentication, and resilient API handling 87.2 RPS on Kubernetes." 
         },
         { 
           name: "Redis & BullMQ", 
           tag: "High Concurrency", 
           project: "ArkNet Platform", 
-          desc: "Viết script Lua nguyên tử tính điểm ranking trending <1ms, 9 worker queues cô lập tác vụ nền." 
+          desc: "Authored atomic Lua scripts for time-decayed ranking (<1ms) and orchestrated 9 BullMQ worker queues for async jobs." 
         },
         { 
           name: "Java 21 & Spring Boot 4", 
           tag: "Enterprise System", 
           project: "ISB Vietnam", 
-          desc: "Xây dựng engine lọc CV 1-to-N hàng loạt, tối ưu truy vấn MyBatis triệt tiêu hoàn toàn lỗi N+1." 
+          desc: "Engineered batch 1-to-N CV parsing engine; tuned MyBatis queries to eliminate N+1 query bottlenecks." 
         },
         { 
           name: "Python & FastAPI", 
           tag: "AI Model Serving", 
           project: "HCMUS vnTTS", 
-          desc: "API gateway bất đồng bộ điều phối mô hình âm thanh AI chạy trên GPU Nvidia CUDA." 
+          desc: "Constructed asynchronous API gateway coordinating neural voice synthesis models accelerated on CUDA GPUs." 
         },
         { 
           name: "WebSockets & Socket.IO", 
           tag: "Real-time Event", 
           project: "ArkNet Platform", 
-          desc: "Phân phối thông báo, trạng thái trực tuyến (presence) và tin nhắn thời gian thực qua Redis adapter." 
+          desc: "Distributed real-time user presence, notifications, and instant messaging using Redis Pub/Sub adapters." 
         }
       ]
     },
@@ -233,25 +228,25 @@ export const skillsData = {
           name: "PostgreSQL & Drizzle ORM", 
           tag: "Relational Modeling", 
           project: "ArkNet & ISB", 
-          desc: "Mô hình hóa dữ liệu quan hệ, transactional pooling, viết migration an toàn cho production." 
+          desc: "Designed relational schema, transactional connection pooling, and safe production migration workflows." 
         },
         { 
           name: "HashiCorp Vault & Data Security", 
           tag: "Enterprise Security", 
           project: "ISB Vietnam", 
-          desc: "Mã hóa thông tin cá nhân (PII) cấp trường với Wrapped DEK; truy vấn qua HMAC Blind Index." 
+          desc: "Implemented field-level PII encryption with Wrapped DEK; executed exact search queries via HMAC Blind Indexing." 
         },
         { 
           name: "SQL Server (MSSQL)", 
           tag: "Database Tuning", 
           project: "PetCareX System", 
-          desc: "Chuẩn hóa 3NF, áp dụng Sequential UUID (COMB) triệt tiêu 100% tình trạng phân mảnh đĩa." 
+          desc: "Structured 3NF schema; applied Sequential COMB UUIDs to completely eliminate B-Tree index fragmentation." 
         },
         { 
           name: "In-Memory SQLite", 
           tag: "Agent Sandboxing", 
           project: "ISB Vietnam", 
-          desc: "Tạo môi trường phân tích dữ liệu biệt lập trong RAM, bảo vệ cơ sở dữ liệu chính khi AI chạy code." 
+          desc: "Provisioned isolated ephemeral RAM databases, safeguarding production databases during AI code execution." 
         }
       ]
     },
@@ -263,19 +258,19 @@ export const skillsData = {
           name: "Multi-Agent Orchestration (MCP)", 
           tag: "Autonomous AI", 
           project: "ISB Vietnam", 
-          desc: "Kiến trúc Lead/Helper agent phân tách truy vấn phức tạp, xử lý dữ liệu tăng 5.8x row volume." 
+          desc: "Architected Lead/Helper agent query decomposition, scaling analyzed row volume by 5.8x in under 5 minutes." 
         },
         { 
           name: "LLM APIs & Prompt Engineering", 
           tag: "Production AI", 
           project: "News Intelligence", 
-          desc: "Tích hợp Gemini SDK & vLLM: Tự động trích xuất tin tức, loại bỏ rác và tóm tắt sự kiện dưới 8 giây." 
+          desc: "Integrated Gemini API & vLLM: Structured JSON extraction, noise reduction, and automated news summarization." 
         },
         { 
           name: "Neural Audio & PyTorch", 
           tag: "HCMUS Research", 
           project: "vnTTS Corpus", 
-          desc: "Khám phá dataset 27.1h (14,475 mẫu âm thanh tiếng Việt) và thực thi suy luận mô hình trên GPU." 
+          desc: "Conducted EDA on 27.1h speech corpus (14,475 audio-text pairs) and deployed GPU neural inference pipeline." 
         }
       ]
     },
@@ -287,19 +282,19 @@ export const skillsData = {
           name: "React 19 & Next.js 15", 
           tag: "Modern Frontend", 
           project: "ArkNet & ISB Platform", 
-          desc: "Tối ưu Server Components, client state reactive, kiến trúc giao diện tương tác cao không độ trễ." 
+          desc: "Optimized React Server Components, client state reactivity, and high-performance zero-latency user flows." 
         },
         { 
           name: "Tailwind CSS & Motion", 
           tag: "Neobrutal UI", 
           project: "Portfolio & Dashboards", 
-          desc: "Phong cách Neobrutalism sắc sảo, scrollytelling physics, hiệu ứng spring chuyển động phi tuyến tính." 
+          desc: "Engineered playful Neobrutalist design system, scrollytelling physics, and non-linear spring transitions." 
         },
         { 
           name: "Vue 3 & TypeScript", 
           tag: "Enterprise Dashboard", 
           project: "ISB Vietnam", 
-          desc: "Phát triển portal nội bộ cho quản trị viên theo dõi hoạt động agent và báo cáo nhân sự." 
+          desc: "Built enterprise internal administration portals for agent monitoring and organizational reporting." 
         }
       ]
     },
@@ -311,19 +306,19 @@ export const skillsData = {
           name: "Kubernetes (K8s HPA)", 
           tag: "Cloud Autoscaling", 
           project: "ArkNet Stress Lab", 
-          desc: "Cấu hình Horizontal Pod Autoscaler tự động co giãn từ 2 lên 10 pods theo tải CPU/RAM." 
+          desc: "Configured Horizontal Pod Autoscaler dynamically scaling replicas from 2 to 10 based on CPU/memory telemetry." 
         },
         { 
           name: "Vitest & Automated QA", 
           tag: "5,600+ Test Suite", 
           project: "ISB & PetCareX", 
-          desc: "Thiết kế bộ kiểm thử tự động toàn diện, Playwright E2E, chạy song song cắt 50% thời gian CI." 
+          desc: "Architected comprehensive test harnesses and parallel Playwright E2E suites, reducing CI runtime by 50%." 
         },
         { 
           name: "Docker & Testcontainers", 
           tag: "Containerization", 
           project: "CI/CD Pipeline", 
-          desc: "Đóng gói multi-stage builds, khởi tạo database tạm thời cô lập cho từng luồng kiểm thử." 
+          desc: "Engineered multi-stage builds and isolated ephemeral database containers per worker thread in CI/CD." 
         }
       ]
     }

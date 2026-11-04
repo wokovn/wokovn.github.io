@@ -3,13 +3,8 @@ import { motion } from 'framer-motion';
 import { 
   ShieldCheck, 
   Lock, 
-  CheckCircle2, 
-  Zap, 
-  Clock, 
-  Cpu, 
-  ExternalLink 
+  CheckCircle2
 } from 'lucide-react';
-import { GithubIcon } from '../Icons';
 
 export default function VaultSecurityCard({ isb }) {
   const [isEncrypted, setIsEncrypted] = useState(true);
@@ -45,10 +40,10 @@ export default function VaultSecurityCard({ isb }) {
         {/* Architecture Impact Box */}
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-purple/10 space-y-1">
           <span className="text-[10px] font-mono font-black text-[#121316] uppercase block">
-            BẢO MẬT DỮ LIỆU &amp; TỐI ƯU TRUY VẤN:
+            ENTERPRISE SECURITY &amp; QUERY OPTIMIZATION:
           </span>
           <p className="text-xs text-slate-800 font-medium leading-relaxed">
-            Bảo vệ dữ liệu nhạy cảm (PII) bằng mã hóa HashiCorp Vault DEK, đồng thời tối ưu regex (ReDoS fix) giúp thời gian phản hồi giảm từ <strong>3-18 giây xuống còn &lt;200ms</strong>.
+            Protects sensitive data (PII) using HashiCorp Vault wrapped Data Encryption Keys (DEK), coupled with Catastrophic Backtracking regex tuning (ReDoS fix) dropping execution latency from <strong>3-18 seconds down to &lt;200ms</strong>.
           </p>
         </div>
 
@@ -63,7 +58,7 @@ export default function VaultSecurityCard({ isb }) {
               onClick={() => setIsEncrypted(!isEncrypted)}
               className="px-2.5 py-1 rounded-lg border border-[#121316] bg-neo-yellow text-[10px] font-mono font-bold shadow-neo-xs hover:bg-yellow-300 transition-colors"
             >
-              {isEncrypted ? 'Xem plaintext dữ liệu' : 'Bật mã hóa Vault'}
+              {isEncrypted ? 'View Plaintext' : 'Enable Vault Encryption'}
             </button>
           </div>
 
@@ -74,7 +69,7 @@ export default function VaultSecurityCard({ isb }) {
             </div>
             <div className="text-[10px] text-emerald-800 font-bold pt-0.5 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-              <span>Tìm kiếm trực tiếp trên HMAC Blind Index không cần giải mã database.</span>
+              <span>Exact search executed directly on HMAC Blind Index without decrypting entire table.</span>
             </div>
           </div>
         </div>
@@ -82,15 +77,15 @@ export default function VaultSecurityCard({ isb }) {
         {/* Performance Badges */}
         <div className="grid grid-cols-2 gap-2.5 text-xs font-mono">
           <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-xs space-y-0.5">
-            <span className="text-[9px] text-slate-500 font-bold block uppercase">TỐC ĐỘ PHÂN TÍCH</span>
-            <span className="text-sm font-black text-[#121316] block">Tăng 5.8x Row Volume</span>
-            <span className="text-[10px] text-slate-600 block">Vài tiếng xuống ~5 phút</span>
+            <span className="text-[9px] text-slate-500 font-bold block uppercase">ANALYSIS VOLUME</span>
+            <span className="text-sm font-black text-[#121316] block">5.8x Row Volume Boost</span>
+            <span className="text-[10px] text-slate-600 block">Hours down to ~5 mins</span>
           </div>
 
           <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-xs space-y-0.5">
-            <span className="text-[9px] text-slate-500 font-bold block uppercase">HIỆU NĂNG XỬ LÝ</span>
+            <span className="text-[9px] text-slate-500 font-bold block uppercase">LATENCY TUNING</span>
             <span className="text-sm font-black text-[#121316] block">3-18s → &lt;200ms</span>
-            <span className="text-[10px] text-slate-600 block">Khắc phục triệt để ReDoS</span>
+            <span className="text-[10px] text-slate-600 block">Catastrophic ReDoS Solved</span>
           </div>
         </div>
 
@@ -107,4 +102,3 @@ export default function VaultSecurityCard({ isb }) {
     </motion.div>
   );
 }
-

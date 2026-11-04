@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Terminal, CheckCircle2, FolderGit2 } from 'lucide-react';
+import { Sparkles, CheckCircle2, FolderGit2 } from 'lucide-react';
 import { skillsData } from '../data/portfolioData';
 
 export default function SkillsMatrix() {
   const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = [
-    { id: 'all', label: 'Tất cả công nghệ' },
-    { id: 'backend', label: 'Backend & Phân tán' },
-    { id: 'database', label: 'Cơ sở dữ liệu & Bảo mật' },
+    { id: 'all', label: 'All Technologies' },
+    { id: 'backend', label: 'Backend & Distributed' },
+    { id: 'database', label: 'Database & Security' },
     { id: 'ai', label: 'AI & Multi-Agent' },
     { id: 'frontend', label: 'Frontend & UI' },
     { id: 'devops', label: 'DevOps & Testing' },
@@ -45,13 +45,13 @@ export default function SkillsMatrix() {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm uppercase">
               <Sparkles className="w-3.5 h-3.5 text-[#121316]" />
-              <span>// 03. THỰC CHIẾN &amp; CÔNG NGHỆ ÁP DỤNG</span>
+              <span>// 03. TECHNICAL ARSENAL</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-[#121316] tracking-tight">
-              KỸ NĂNG &amp; KINH NGHIỆM THỰC TẾ
+              CORE ENGINEERING CAPABILITIES
             </h2>
             <p className="text-xs sm:text-sm text-slate-700 max-w-2xl font-medium">
-              Các công nghệ được áp dụng trực tiếp trong dự án thực tế và quá trình thực tập tại ISB Vietnam.
+              Technologies directly validated in high-concurrency projects and production systems at ISB Vietnam.
             </p>
           </div>
 

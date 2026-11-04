@@ -34,7 +34,7 @@ export default function NeobrutalSystems() {
               HIGH-CONCURRENCY ARCHITECTURE LAB
             </h2>
             <p className="text-sm sm:text-base text-slate-700 mt-2 max-w-3xl font-medium">
-              Khảo sát hành vi hệ thống dưới tải 350 người dùng đồng thời: Đối chiếu trần giới hạn tài nguyên và cơ chế tự phục hồi tự động qua Kubernetes HPA.
+              Investigating system resilience under 350 concurrent users: Resource saturation limits vs. automated Kubernetes HPA self-healing.
             </p>
           </div>
           
