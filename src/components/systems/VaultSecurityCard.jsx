@@ -107,3 +107,4 @@ export default function VaultSecurityCard({ isb }) {
     </motion.div>
   );
 }
+

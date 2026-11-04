@@ -109,3 +109,4 @@ export default function DatabaseOptimizationCard({ petcarex }) {
     </motion.div>
   );
 }
+

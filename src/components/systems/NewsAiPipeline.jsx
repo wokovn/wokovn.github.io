@@ -91,7 +91,7 @@ export default function NewsAiPipeline({ tts }) {
           KIẾN TRÚC TỰ ĐỘNG HÓA TẬN DỤNG GPU:
         </span>
         <p className="text-xs text-slate-800 font-medium leading-relaxed">
-          Tự động hóa toàn diện quy trình từ bóc tách báo điện tử, tóm tắt ngữ cảnh bằng Gemini AI đến tổng hợp giọng đọc tiếng Việt trên hạ tầng CUDA. Rút ngắn thời gian biên tập tin tức từ <strong>45 phút xuống còn dưới 8 giây</strong>.
+          Tự động hóa toàn diện quy trình từ bóc tách báo điện tử, tóm tắt ngữ cảnh bằng Gemini AI đến tổng hợp giọng đọc tiếng Việt trên hạ tầng CUDA. Triển khai cơ chế <strong>Job-based polling trên FastAPI</strong> để xử lý bất đồng bộ các đoạn audio dài mà không gây block luồng Node.js chính.
         </p>
       </div>
 
@@ -102,7 +102,7 @@ export default function NewsAiPipeline({ tts }) {
             <Layers className="w-4 h-4 text-neo-pink" />
             <span>4 GIAI ĐOẠN XỬ LÝ (CHỌN TỪNG BƯỚC ĐỂ XEM THÔNG SỐ)</span>
           </span>
-          <span className="text-slate-500 hidden sm:inline">End-to-End Latency &lt;8s</span>
+          <span className="text-slate-500 hidden sm:inline">Decoupled FastAPI Architecture</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -143,9 +143,9 @@ export default function NewsAiPipeline({ tts }) {
           </span>
         </div>
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm flex items-center justify-between">
-          <span className="text-slate-600 font-bold text-[11px]">TỔNG HỢP TIN TỨC:</span>
+          <span className="text-slate-600 font-bold text-[11px]">XỬ LÝ ĐA NHIỆM:</span>
           <span className="bg-neo-cyan px-2 py-0.5 rounded border border-[#121316] font-black text-[11px]">
-            45 Phút → &lt;8 Giây
+            Job-based Polling (Tránh Timeout)
           </span>
         </div>
         <div className="p-3 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm flex items-center justify-between">
@@ -167,3 +167,4 @@ export default function NewsAiPipeline({ tts }) {
     </motion.div>
   );
 }
+

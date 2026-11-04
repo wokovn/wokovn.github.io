@@ -17,7 +17,7 @@ export default function ThreeScene() {
       0.1,
       1000
     );
-    camera.position.set(0, 0, 7);
+    camera.position.set(0, 0, 7.8);
 
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
@@ -56,7 +56,7 @@ export default function ThreeScene() {
     const sat1Geo = new THREE.TorusGeometry(0.5, 0.2, 8, 16);
     const sat1Mat = new THREE.MeshBasicMaterial({ color: 0x00F0FF }); // Neo Cyan
     const sat1 = new THREE.Mesh(sat1Geo, sat1Mat);
-    sat1.position.set(2.4, 1.2, -0.5);
+    sat1.position.set(1.9, 1.1, -0.4);
     const sat1Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat1Geo), wireMat);
     sat1.add(sat1Wire);
     mainGroup.add(sat1);
@@ -64,7 +64,7 @@ export default function ThreeScene() {
     const sat2Geo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
     const sat2Mat = new THREE.MeshBasicMaterial({ color: 0xFF6584 }); // Neo Pink
     const sat2 = new THREE.Mesh(sat2Geo, sat2Mat);
-    sat2.position.set(-2.5, -1.0, 0.5);
+    sat2.position.set(-1.95, -0.85, 0.4);
     const sat2Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat2Geo), wireMat);
     sat2.add(sat2Wire);
     mainGroup.add(sat2);
@@ -72,7 +72,7 @@ export default function ThreeScene() {
     const sat3Geo = new THREE.OctahedronGeometry(0.6);
     const sat3Mat = new THREE.MeshBasicMaterial({ color: 0xA388EE }); // Neo Purple
     const sat3 = new THREE.Mesh(sat3Geo, sat3Mat);
-    sat3.position.set(1.8, -1.8, 0.8);
+    sat3.position.set(1.45, -1.45, 0.6);
     const sat3Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat3Geo), wireMat);
     sat3.add(sat3Wire);
     mainGroup.add(sat3);
@@ -165,14 +165,14 @@ export default function ThreeScene() {
       // Wobble & orbit satellites
       sat1.rotation.x = elapsed * 1.2;
       sat1.rotation.y = elapsed * 0.8;
-      sat1.position.y = 1.2 + Math.sin(elapsed * 2) * 0.25;
+      sat1.position.y = 1.1 + Math.sin(elapsed * 2) * 0.18;
 
       sat2.rotation.x = -elapsed * 0.9;
       sat2.rotation.z = elapsed * 1.1;
-      sat2.position.x = -2.5 + Math.cos(elapsed * 1.8) * 0.2;
+      sat2.position.x = -1.95 + Math.cos(elapsed * 1.8) * 0.15;
 
       sat3.rotation.y = elapsed * 1.5;
-      sat3.position.y = -1.8 + Math.cos(elapsed * 2.2) * 0.25;
+      sat3.position.y = -1.45 + Math.cos(elapsed * 2.2) * 0.18;
 
       // Core Scale Pulse
       const scale = 1 + Math.sin(elapsed * 3) * 0.04 + bounceImpulse;
@@ -209,7 +209,7 @@ export default function ThreeScene() {
   }, []);
 
   return (
-    <div className="relative w-full h-full min-h-[400px] lg:min-h-[500px] flex items-center justify-center cursor-pointer select-none">
+    <div className="relative w-full h-full min-h-[380px] lg:min-h-[440px] flex items-center justify-center cursor-pointer select-none">
       <div ref={mountRef} className="w-full h-full absolute inset-0" />
       {/* Playful Floating Badge */}
       <div className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm transform rotate-2 hover:rotate-0 transition-transform">

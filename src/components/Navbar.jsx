@@ -53,7 +53,7 @@ export default function Navbar({ onOpenTerminal }) {
 
   return (
     <header className="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none">
-      <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
+      <div className="max-w-7xl mx-auto relative flex items-center justify-between pointer-events-auto">
         
         {/* Brand / Logo */}
         <a 
@@ -75,8 +75,8 @@ export default function Navbar({ onOpenTerminal }) {
           </div>
         </a>
 
-        {/* Desktop Nav Pills */}
-        <nav className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-2xl border-2 border-[#121316] bg-white shadow-neo">
+        {/* Desktop Nav Pills - Dead Center */}
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 px-3 py-2 rounded-2xl border-2 border-[#121316] bg-white shadow-neo">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.replace('#', '');
             return (

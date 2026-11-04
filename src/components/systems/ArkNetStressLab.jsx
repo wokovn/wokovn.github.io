@@ -546,3 +546,4 @@ return new_score`}
     </div>
   );
 }
+

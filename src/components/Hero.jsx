@@ -53,8 +53,8 @@ export default function Hero({ onOpenTerminal }) {
             </div>
 
             {/* Giant Punchy Headline */}
-            <div className="space-y-3">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#121316] tracking-tight leading-[1.05]">
+            <div className="space-y-3 pt-1">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#121316] tracking-tight leading-[1.12]">
                 NGUYỄN ANH KHOA
               </h1>
               <div className="inline-block px-3 py-1 bg-neo-yellow border-2 border-[#121316] shadow-neo transform -rotate-1">
@@ -153,7 +153,7 @@ export default function Hero({ onOpenTerminal }) {
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5"
           >
-            <div className="neo-card overflow-hidden bg-white shadow-neo-xl transform hover:rotate-1 transition-transform">
+            <div className="neo-card overflow-hidden bg-white shadow-neo-xl">
               
               {/* Window Header */}
               <div className="px-4 py-3 border-b-2 border-[#121316] bg-neo-yellow flex items-center justify-between">
