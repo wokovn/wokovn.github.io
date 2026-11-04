@@ -51,7 +51,7 @@ export default function SkillsMatrix() {
               KỸ NĂNG &amp; KINH NGHIỆM THỰC TẾ
             </h2>
             <p className="text-xs sm:text-sm text-slate-700 max-w-2xl font-medium">
-              Không tự nhận "Advanced / Expert" sáo rỗng. Toàn bộ công nghệ dưới đây đều gắn liền với dự án thực tế, có code và đo lường hiệu năng rõ ràng.
+              Các công nghệ được áp dụng trực tiếp trong dự án thực tế và quá trình thực tập tại ISB Vietnam.
             </p>
           </div>
 

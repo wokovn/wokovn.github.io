@@ -12,7 +12,7 @@ export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#FFFDF7] text-[#121316] font-sans selection:bg-neo-yellow selection:text-[#121316] relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFDF7] text-[#121316] font-sans selection:bg-neo-yellow selection:text-[#121316] relative">
       
       {/* Top Navbar */}
       <Navbar onOpenTerminal={() => setTerminalOpen(true)} />
