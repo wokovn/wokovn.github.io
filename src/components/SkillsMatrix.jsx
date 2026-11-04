@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Terminal } from 'lucide-react';
+import { Sparkles, Terminal, CheckCircle2, FolderGit2 } from 'lucide-react';
 import { skillsData } from '../data/portfolioData';
 
 export default function SkillsMatrix() {
   const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = [
-    { id: 'all', label: 'All Technologies' },
-    { id: 'backend', label: 'Backend & Distributed' },
-    { id: 'database', label: 'Databases & In-Memory' },
+    { id: 'all', label: 'Tất cả công nghệ' },
+    { id: 'backend', label: 'Backend & Phân tán' },
+    { id: 'database', label: 'Cơ sở dữ liệu & Bảo mật' },
     { id: 'ai', label: 'AI & Multi-Agent' },
     { id: 'frontend', label: 'Frontend & UI' },
-    { id: 'devops', label: 'DevOps & QA' },
+    { id: 'devops', label: 'DevOps & Testing' },
   ];
 
   const filteredCategories = activeCategory === 'all'
@@ -42,14 +42,17 @@ export default function SkillsMatrix() {
           transition={{ duration: 0.5 }}
           className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]"
         >
-          <div>
+          <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm uppercase">
               <Sparkles className="w-3.5 h-3.5 text-[#121316]" />
-              <span>// 03. ENGINEERING ARSENAL</span>
+              <span>// 03. THỰC CHIẾN &amp; CÔNG NGHỆ ÁP DỤNG</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-[#121316] mt-3 tracking-tight">
-              SKILLS &amp; TECHNOLOGIES
+            <h2 className="text-3xl sm:text-5xl font-black text-[#121316] tracking-tight">
+              KỸ NĂNG &amp; KINH NGHIỆM THỰC TẾ
             </h2>
+            <p className="text-xs sm:text-sm text-slate-700 max-w-2xl font-medium">
+              Không tự nhận "Advanced / Expert" sáo rỗng. Toàn bộ công nghệ dưới đây đều gắn liền với dự án thực tế, có code và đo lường hiệu năng rõ ràng.
+            </p>
           </div>
 
           {/* Category Filter Pills */}
@@ -86,24 +89,38 @@ export default function SkillsMatrix() {
                   {cat.name}
                 </h3>
                 <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded border border-[#121316] ${getCategoryColor(cat.id)}`}>
-                  {cat.skills.length} SKILLS
+                  {cat.skills.length} TECHS
                 </span>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {cat.skills.map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm">
-                    <div className="flex items-center justify-between">
+                  <div key={sIdx} className="p-3.5 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm space-y-2">
+                    
+                    {/* Header: Skill Name & Verified Project Pill */}
+                    <div className="flex flex-wrap items-center justify-between gap-1.5">
                       <span className="text-xs sm:text-sm font-black text-[#121316]">
                         {skill.name}
                       </span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-[#121316] bg-white font-bold text-slate-700">
-                        {skill.level}
+                      <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-md border border-[#121316] bg-neo-yellow/40 font-bold text-[#121316]">
+                        <FolderGit2 className="w-3 h-3 text-[#121316]" />
+                        <span>{skill.project}</span>
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 font-medium mt-1 leading-snug">
+
+                    {/* Practical Work Description */}
+                    <p className="text-xs text-slate-700 font-medium leading-relaxed">
                       {skill.desc}
                     </p>
+
+                    {/* Role / Practical Tag */}
+                    <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-slate-500 font-bold">
+                      <span className="text-emerald-700 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span>{skill.tag}</span>
+                      </span>
+                    </div>
+
                   </div>
                 ))}
               </div>
