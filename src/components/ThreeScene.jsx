@@ -209,7 +209,7 @@ export default function ThreeScene() {
   }, []);
 
   return (
-    <div className="relative w-full h-full min-h-[380px] lg:min-h-[440px] flex items-center justify-center cursor-pointer select-none">
+    <div className="relative w-full h-[300px] sm:h-[340px] lg:h-[370px] flex items-center justify-center cursor-pointer select-none">
       <div ref={mountRef} className="w-full h-full absolute inset-0" />
       {/* Playful Floating Badge */}
       <div className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm transform rotate-2 hover:rotate-0 transition-transform">
