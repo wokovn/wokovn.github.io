@@ -16,7 +16,7 @@ export default function Navbar({ onOpenTerminal }) {
   }, []);
 
   const navLinks = [
-    { name: 'Systems', href: '#systems' },
+    { name: 'Systems', href: '#bento-systems' },
     { name: 'Benchmarks', href: '#benchmarks' },
     { name: 'Experience', href: '#experience' },
     { name: 'Skills', href: '#skills' },

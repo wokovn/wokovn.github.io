@@ -160,7 +160,7 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div 
+      <div
         className="w-full max-w-2xl rounded-2xl bg-surface-100 border border-brand-cyan/40 shadow-[0_0_50px_rgba(0,247,247,0.2)] overflow-hidden font-mono flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
       >
@@ -224,3 +224,4 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
     </div>
   );
 }
+

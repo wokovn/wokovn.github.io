@@ -1,6 +1,7 @@
 import React from 'react';
 import { Zap, CheckCircle2, Cpu, ShieldCheck, TrendingUp } from 'lucide-react';
 import { coreMetrics } from '../data/portfolioData';
+import SpotlightCard from './SpotlightCard';
 
 export default function MetricsBar() {
   const getIcon = (iconName) => {
@@ -14,39 +15,39 @@ export default function MetricsBar() {
   };
 
   return (
-    <section id="benchmarks" className="py-12 relative z-10 border-y border-surface-border/60 bg-surface-200/40 backdrop-blur-sm">
+    <section id="benchmarks" className="py-14 relative z-10 border-y border-white/[0.06] bg-[#070b14]/60 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-brand-cyan uppercase tracking-wider">
-              <span>// 02. VERIFIED ENGINEERING METRICS</span>
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-brand-cyan uppercase tracking-widest">
+              <span>// 01. HARD SYSTEM TELEMETRY</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
-              Performance Under Real Load &amp; Production Scale
+              Stress-Tested Performance &amp; Production Scale
             </h2>
           </div>
-          <div className="text-xs font-mono text-slate-400">
-            Backed by k6 stress testing &amp; CI/CD telemetry
+          <div className="text-xs font-mono text-slate-500">
+            Automated k6 benchmarks &amp; Docker container test telemetry
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {coreMetrics.map((metric, idx) => (
-            <div
+            <SpotlightCard
               key={idx}
-              className="group relative rounded-xl bg-surface-100/80 border border-surface-border p-5 hover:border-slate-500 hover:bg-surface-100 transition-all shadow-lg"
+              className="p-5"
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="p-2.5 rounded-lg bg-surface-200 border border-surface-border group-hover:border-slate-600 transition-colors">
+                <div className="p-2 rounded-lg bg-white/[0.04] border border-white/[0.08]">
                   {getIcon(metric.icon)}
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-surface-200 border border-surface-border/80 text-slate-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-slate-400">
                   {metric.badge}
                 </span>
               </div>
 
-              <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight group-hover:text-brand-cyan transition-colors">
+              <div className="text-3xl font-extrabold text-white font-mono tracking-tight">
                 {metric.value}
               </div>
 
@@ -57,7 +58,7 @@ export default function MetricsBar() {
               <div className="text-xs text-slate-400 mt-1 leading-relaxed">
                 {metric.detail}
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
 

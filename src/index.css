@@ -8,7 +8,7 @@
 
 body {
   background-color: #080c15;
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% 0%, rgba(0, 247, 247, 0.05) 0%, transparent 50%),
     radial-gradient(circle at 90% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 40%),
     linear-gradient(to bottom, transparent, rgba(8, 12, 21, 0.8));
@@ -18,7 +18,7 @@ body {
 /* Developer grid pattern */
 .bg-grid-pattern {
   background-size: 32px 32px;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
@@ -57,6 +57,7 @@ body {
 }
 
 /* Code block font */
-pre, code {
+pre,
+code {
   font-family: 'Fira Code', 'JetBrains Mono', monospace;
 }

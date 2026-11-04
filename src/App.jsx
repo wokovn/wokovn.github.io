@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import MetricsBar from './components/MetricsBar';
-import SystemsShowcase from './components/SystemsShowcase';
+import BentoGrid from './components/BentoGrid';
 import ExperienceTimeline from './components/ExperienceTimeline';
 import SkillsMatrix from './components/SkillsMatrix';
 import ContactFooter from './components/ContactFooter';
@@ -12,23 +12,23 @@ export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#080c15] text-slate-100 font-sans selection:bg-brand-cyan/20 selection:text-brand-cyan relative">
+    <div className="min-h-screen bg-[#05070d] text-slate-100 font-sans selection:bg-brand-cyan/20 selection:text-brand-cyan relative">
       
       {/* Background Subtle Grid Pattern */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-60 pointer-events-none" />
+      <div className="fixed inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
 
       {/* Top Navbar */}
       <Navbar onOpenTerminal={() => setTerminalOpen(true)} />
 
-      {/* Hero Section */}
+      {/* Hero Section with Three.js Interactive 3D Scene */}
       <main>
         <Hero onOpenTerminal={() => setTerminalOpen(true)} />
 
         {/* Engineering Metrics Ribbon */}
         <MetricsBar />
 
-        {/* Systems Showcase (ArkNet, Vietnamese TTS, ISB, PetCareX) */}
-        <SystemsShowcase />
+        {/* Bento Grid Architecture Showcase */}
+        <BentoGrid />
 
         {/* Experience & Education */}
         <ExperienceTimeline />
