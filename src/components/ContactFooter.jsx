@@ -102,7 +102,7 @@ export default function ContactFooter({ onOpenTerminal }) {
               {personalInfo.name} • @{personalInfo.handle}
             </div>
             <p className="text-slate-600 font-sans font-medium text-xs max-w-md">
-              Engineered with React 19, Three.js WebGL, and Tailwind CSS. Built in Neobrutalist design for creative developers.
+              Designed and engineered by {personalInfo.name}. Built with React 19, Three.js WebGL, and Tailwind CSS.
             </p>
             <div className="flex items-center gap-2 pt-1 text-[11px]">
               <span className="w-2.5 h-2.5 rounded-full bg-neo-green border border-[#121316]" />
