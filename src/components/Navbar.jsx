@@ -9,7 +9,6 @@ export default function Navbar({ onOpenTerminal }) {
 
   const navLinks = [
     { name: 'Systems', href: '#systems' },
-    { name: 'Telemetry', href: '#telemetry' },
     { name: 'Track Record', href: '#experience' },
     { name: 'Arsenal', href: '#skills' },
     { name: 'Contact', href: '#contact' },
@@ -17,7 +16,7 @@ export default function Navbar({ onOpenTerminal }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['systems', 'telemetry', 'experience', 'skills', 'contact'];
+      const sections = ['systems', 'experience', 'skills', 'contact'];
       const scrollPos = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {

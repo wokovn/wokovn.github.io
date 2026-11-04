@@ -92,6 +92,7 @@ export default function ArkNetStressLab({ arknet }) {
       
       {/* Container: Desktop uses tall track for smooth scrollytelling; Mobile uses clean natural height */}
       <div 
+        id="telemetry"
         ref={trackRef} 
         className="relative lg:h-[240vh] scroll-mt-20"
       >
