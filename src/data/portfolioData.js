@@ -147,8 +147,8 @@ return new_score`
     ]
   },
   {
-    id: "modular backend-testing",
-    title: "EShop modular backend Automated QA Harness",
+    id: "eshop-qa-testing",
+    title: "EShop Automated QA Harness",
     tagline: "End-to-end testing, API regression, and stress testing with CI/CD integration",
     repo: "https://github.com/wokovn/Group06_HW2_Testing",
     category: "QA Engineering & CI/CD",
