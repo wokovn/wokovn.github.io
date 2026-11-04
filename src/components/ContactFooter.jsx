@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Globe, Copy, Check, ArrowUp, Heart, Terminal } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from './Icons';
+import { Mail, Phone, MapPin, ArrowUpRight, Copy, Check, Terminal, Heart } from 'lucide-react';
 import { personalInfo } from '../data/portfolioData';
+import { GithubIcon, LinkedinIcon } from './Icons';
 import confetti from 'canvas-confetti';
 
 export default function ContactFooter({ onOpenTerminal }) {
@@ -22,10 +22,10 @@ export default function ContactFooter({ onOpenTerminal }) {
     navigator.clipboard.writeText(personalInfo.email);
     setCopied(true);
     confetti({
-      particleCount: 50,
-      spread: 60,
+      particleCount: 70,
+      spread: 80,
       origin: { y: 0.9 },
-      colors: ['#00f7f7', '#10b981', '#8b5cf6']
+      colors: ['#FFE600', '#FF6584', '#00F0FF', '#4ECCA3', '#A388EE']
     });
     setTimeout(() => setCopied(false), 2500);
   };
@@ -35,41 +35,39 @@ export default function ContactFooter({ onOpenTerminal }) {
   };
 
   return (
-    <footer id="contact" className="py-20 relative z-10 border-t border-surface-border bg-surface-200/50">
+    <footer id="contact" className="py-20 relative z-10 border-t-2 border-[#121316] bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         
-        {/* Contact Banner */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-surface-100 via-surface-100/90 to-surface-200 border border-surface-border shadow-2xl relative overflow-hidden">
+        {/* Big Punchy Banner */}
+        <div className="neo-card p-8 sm:p-12 bg-neo-yellow shadow-neo-2xl space-y-8 relative overflow-hidden">
           
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-cyan/10 blur-[100px] rounded-full pointer-events-none" />
-
-          <div className="max-w-3xl space-y-6 relative z-10">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-brand-cyan uppercase tracking-wider">
-              <span>// 06. READY TO COLLABORATE</span>
+          <div className="space-y-4 max-w-3xl relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-white text-xs font-mono font-black uppercase shadow-neo-sm">
+              <span>// READY TO COLLABORATE?</span>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Let's Build Something High-Impact Together.
+            <h2 className="text-3xl sm:text-6xl font-black text-[#121316] tracking-tight leading-[1.05]">
+              LET'S BUILD SOMETHING SICK TOGETHER.
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              Open to Software Engineer (Backend, Full-Stack, AI Systems) opportunities, high-throughput distributed architectures, and technical deep-dives.
+            <p className="text-base sm:text-xl font-medium text-[#121316] leading-relaxed">
+              Available for Software Engineer roles (Backend, Full-Stack, AI Systems). High throughput, resilient distributed architectures, zero fluff.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <button
                 onClick={handleCopyEmail}
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-brand-cyan hover:bg-cyan-300 text-slate-950 font-bold text-sm transition-all shadow-[0_0_20px_rgba(0,247,247,0.3)] group"
+                className="neo-btn-primary bg-white text-[#121316] text-base"
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-slate-950" />
-                    <span>Copied {personalInfo.email}!</span>
+                    <Check className="w-5 h-5 text-emerald-600" />
+                    <span>COPIED {personalInfo.email}!</span>
                   </>
                 ) : (
                   <>
-                    <Mail className="w-4 h-4 text-slate-950" />
-                    <span>Copy Email Address</span>
+                    <Mail className="w-5 h-5 text-[#121316]" />
+                    <span>COPY EMAIL ADDRESS</span>
                   </>
                 )}
               </button>
@@ -78,71 +76,65 @@ export default function ContactFooter({ onOpenTerminal }) {
                 href={personalInfo.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-surface-200 hover:bg-surface-hover border border-surface-border hover:border-slate-500 text-slate-200 text-sm font-medium transition-all"
+                className="neo-btn-secondary text-base"
               >
-                <LinkedinIcon className="w-4 h-4 text-blue-400" />
-                <span>Connect on LinkedIn</span>
+                <LinkedinIcon className="w-5 h-5 text-[#121316]" />
+                <span>LINKEDIN</span>
+                <ArrowUpRight className="w-4 h-4" />
               </a>
 
               <button
                 onClick={onOpenTerminal}
-                className="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl bg-surface-200/80 hover:bg-surface-100 border border-brand-cyan/20 text-brand-cyan text-xs font-mono transition-all"
+                className="neo-btn-cyan text-xs font-mono"
               >
                 <Terminal className="w-4 h-4" />
-                <span>sudo hire</span>
+                <span>LAUNCH TERMINAL [Cmd+K]</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Footer Meta & Links */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-6 border-t border-surface-border/60 text-xs font-mono text-slate-400">
+        {/* Bottom Metadata & Links */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-6 border-t-2 border-[#121316] text-xs font-mono font-bold text-slate-700">
           
           <div className="space-y-2 md:col-span-2">
-            <div className="text-white font-bold font-sans text-sm">
+            <div className="text-lg font-black text-[#121316] font-sans">
               {personalInfo.name} • @{personalInfo.handle}
             </div>
-            <p className="text-slate-400 font-sans max-w-sm">
-              Crafted with React 19, Vite, and Tailwind CSS. Hosted on GitHub Pages with custom domain <span className="text-brand-cyan">wokovn.id.vn</span>.
+            <p className="text-slate-600 font-sans font-medium text-xs max-w-md">
+              Engineered with React 19, Three.js WebGL, and Tailwind CSS. Built in Neobrutalist design for creative developers.
             </p>
-            <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div className="flex items-center gap-2 pt-1 text-[11px]">
+              <span className="w-2.5 h-2.5 rounded-full bg-neo-green border border-[#121316]" />
               <span>HCM City, Vietnam: {time || 'GMT+7'}</span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <span className="text-slate-300 font-semibold block">Navigation</span>
-            <ul className="space-y-1.5">
-              <li><a href="#systems" className="hover:text-brand-cyan transition-colors">Featured Systems</a></li>
-              <li><a href="#benchmarks" className="hover:text-brand-cyan transition-colors">Stress Telemetry</a></li>
-              <li><a href="#experience" className="hover:text-brand-cyan transition-colors">Experience</a></li>
-              <li><a href="#skills" className="hover:text-brand-cyan transition-colors">Technical Matrix</a></li>
+            <span className="text-black font-black uppercase block">Sections</span>
+            <ul className="space-y-1.5 text-slate-600">
+              <li><a href="#systems" className="hover:text-black hover:underline">Interactive Architecture</a></li>
+              <li><a href="#experience" className="hover:text-black hover:underline">Work &amp; Academics</a></li>
+              <li><a href="#skills" className="hover:text-black hover:underline">Technical Arsenal</a></li>
+              <li><a href="#contact" className="hover:text-black hover:underline">Contact Info</a></li>
             </ul>
           </div>
 
-          <div className="space-y-2 flex flex-col items-start md:items-end justify-between">
-            <div className="space-y-1.5 text-left md:text-right">
-              <span className="text-slate-300 font-semibold block">Social &amp; Repos</span>
-              <div className="flex gap-3">
-                <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" className="hover:text-white p-1 rounded hover:bg-surface-100">
-                  <GithubIcon className="w-4 h-4" />
-                </a>
-                <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white p-1 rounded hover:bg-surface-100">
-                  <LinkedinIcon className="w-4 h-4" />
-                </a>
-                <a href={personalInfo.customDomain} target="_blank" rel="noopener noreferrer" className="hover:text-brand-cyan p-1 rounded hover:bg-surface-100" title="Custom Domain">
-                  <Globe className="w-4 h-4" />
-                </a>
-              </div>
+          <div className="space-y-3 flex flex-col items-start md:items-end justify-between">
+            <div className="flex gap-2">
+              <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm hover:-translate-y-0.5 transition-transform">
+                <GithubIcon className="w-4 h-4" />
+              </a>
+              <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm hover:-translate-y-0.5 transition-transform">
+                <LinkedinIcon className="w-4 h-4" />
+              </a>
             </div>
 
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm hover:-translate-y-0.5 transition-all"
             >
-              <span>Back to Top</span>
-              <ArrowUp className="w-3.5 h-3.5" />
+              <span>BACK TO TOP ↑</span>
             </button>
           </div>
 

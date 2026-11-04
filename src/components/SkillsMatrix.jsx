@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { skillsData } from '../data/portfolioData';
-import SpotlightCard from './SpotlightCard';
 
 export default function SkillsMatrix() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState('all');
 
   const categories = [
     { id: 'all', label: 'All Technologies' },
@@ -11,41 +10,49 @@ export default function SkillsMatrix() {
     { id: 'database', label: 'Databases & In-Memory' },
     { id: 'ai', label: 'AI & Multi-Agent' },
     { id: 'frontend', label: 'Frontend & UI' },
-    { id: 'devops', label: 'DevOps, Cloud & QA' },
+    { id: 'devops', label: 'DevOps & QA' },
   ];
 
-  const filteredCategories = selectedCategory === 'all'
+  const filteredCategories = activeCategory === 'all'
     ? skillsData.categories
-    : skillsData.categories.filter(c => c.id === selectedCategory);
+    : skillsData.categories.filter(c => c.id === activeCategory);
+
+  const getCategoryColor = (id) => {
+    switch (id) {
+      case 'backend': return 'bg-neo-yellow';
+      case 'database': return 'bg-neo-cyan';
+      case 'ai': return 'bg-neo-pink text-white';
+      case 'frontend': return 'bg-neo-purple/40';
+      case 'devops': return 'bg-neo-green';
+      default: return 'bg-neo-yellow';
+    }
+  };
 
   return (
-    <section id="skills" className="py-24 relative z-10 border-t border-white/[0.06] bg-[#070b14]/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="skills" className="py-20 relative z-10 border-t-2 border-[#121316]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-brand-cyan uppercase tracking-widest">
-              <span>// 04. ENGINEERING ARSENAL</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm uppercase">
+              <span>// 03. ENGINEERING ARSENAL</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2 tracking-tight">
-              Technical Stack &amp; Specializations
+            <h2 className="text-3xl sm:text-5xl font-black text-[#121316] mt-3 tracking-tight">
+              SKILLS &amp; TECHNOLOGIES
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 mt-2 max-w-2xl">
-              Deep capability across distributed systems, high-throughput engines, and modern autonomous AI pipelines.
-            </p>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+          <div className="flex flex-wrap gap-2">
             {categories.map(cat => (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-white text-slate-950 font-bold shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-xl border-2 border-[#121316] text-xs font-mono font-bold shadow-neo-sm transition-all ${
+                  activeCategory === cat.id
+                    ? 'bg-[#121316] text-white -translate-y-0.5 shadow-neo'
+                    : 'bg-white text-[#121316] hover:bg-slate-100'
                 }`}
               >
                 {cat.label}
@@ -57,38 +64,38 @@ export default function SkillsMatrix() {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map(cat => (
-            <SpotlightCard
+            <div
               key={cat.id}
-              className="p-6 space-y-4"
+              className="neo-card p-6 bg-white shadow-neo-lg space-y-4 hover:-translate-y-1 transition-transform"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <h3 className="font-bold text-white text-base">
+              <div className="flex items-center justify-between pb-3 border-b-2 border-[#121316]">
+                <h3 className="font-black text-[#121316] text-lg">
                   {cat.name}
                 </h3>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-brand-cyan border border-white/[0.06]">
-                  {cat.skills.length} skills
+                <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded border border-[#121316] ${getCategoryColor(cat.id)}`}>
+                  {cat.skills.length} SKILLS
                 </span>
               </div>
 
               <div className="space-y-2.5">
                 {cat.skills.map((skill, idx) => (
-                  <div key={idx} className="group p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-brand-cyan/40 hover:bg-white/[0.04] transition-all">
+                  <div key={idx} className="p-3 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-brand-cyan transition-colors">
+                      <span className="text-xs sm:text-sm font-black text-[#121316]">
                         {skill.name}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-[#121316] bg-white font-bold text-slate-700">
                         {skill.level}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-600 font-medium mt-1 leading-snug">
                       {skill.desc}
                     </p>
                   </div>
                 ))}
               </div>
 
-            </SpotlightCard>
+            </div>
           ))}
         </div>
 

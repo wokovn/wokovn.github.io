@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, X, CornerDownLeft, Sparkles } from 'lucide-react';
+import { Terminal, X, CornerDownLeft } from 'lucide-react';
 import { personalInfo, coreMetrics, projects } from '../data/portfolioData';
 import confetti from 'canvas-confetti';
 
 export default function TerminalHUD({ isOpen, onClose }) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
-    { type: 'system', text: '⚡ wokovn Terminal Environment v2.5' },
-    { type: 'system', text: 'Type "help" to view available commands or "hire" to trigger confetti.' }
+    { type: 'system', text: '⚡ wokovn Retro Terminal v3.0 [NEOBRUTAL EDITION]' },
+    { type: 'system', text: 'Type "help" to view commands or "hire" for celebration.' }
   ]);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
@@ -22,7 +22,6 @@ export default function TerminalHUD({ isOpen, onClose }) {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [history]);
 
-  // Handle hotkeys (Esc to close)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -39,31 +38,31 @@ export default function TerminalHUD({ isOpen, onClose }) {
 
   const handleCommand = (cmdText) => {
     const cleanCmd = cmdText.trim().toLowerCase();
-    const newHistory = [...history, { type: 'user', text: `$ ${cmdText}` }];
+    const newHistory = [...history, { type: 'user', text: `> ${cmdText}` }];
 
     switch (cleanCmd) {
       case 'help':
         newHistory.push({
           type: 'response',
-          text: `Available commands:
-  • help       : Display this cheat sheet
+          text: `COMMAND CHEAT SHEET:
+  • help       : View all commands
   • about      : Learn about Nguyễn Anh Khoa
-  • projects   : View core distributed & AI systems
-  • metrics    : Check stress test telemetry
-  • skills     : View full technical stack
-  • contact    : Get contact email & phone
-  • hire       : Trigger recruitment confetti
+  • projects   : View 4 core systems (ArkNet, TTS, ISB, PetCareX)
+  • telemetry  : View 350 VUs stress test numbers
+  • skills     : View full technical arsenal
+  • contact    : View direct phone & email
+  • hire       : Trigger confetti & contact info
   • clear      : Clear terminal screen
-  • exit       : Close this terminal`
+  • exit       : Close terminal`
         });
         break;
 
       case 'about':
         newHistory.push({
           type: 'response',
-          text: `[Profile] ${personalInfo.name} (@${personalInfo.handle})
-Target Role : ${personalInfo.targetTitle}
-Education   : ${personalInfo.university} (GPA: ${personalInfo.gpa})
+          text: `[PROFILE] ${personalInfo.name} (@${personalInfo.handle})
+Target Role : Software Engineer
+University  : VNUHCM - University of Science (HCMUS) • GPA: ${personalInfo.gpa}
 Experience  : Fullstack Software Engineer Intern @ ISB Vietnam
 Specialties : Distributed Systems, Multi-Agent AI (MCP), Redis Lua, BullMQ, K8s HPA`
         });
@@ -72,56 +71,57 @@ Specialties : Distributed Systems, Multi-Agent AI (MCP), Redis Lua, BullMQ, K8s 
       case 'projects':
         newHistory.push({
           type: 'response',
-          text: `Core Featured Projects:
-1. ArkNet: High-concurrency social platform (87.2 RPS under 350 VUs, Redis Lua, BullMQ, K8s HPA)
+          text: `CORE SYSTEMS:
+1. ArkNet: High-concurrency social media platform (87.2 RPS, 350 VUs, Redis Lua, BullMQ, K8s HPA)
    -> https://github.com/wokovn/SocialMediaProject
-2. News Summary & Vietnamese TTS: Multi-dialect voice synthesis (vnTTS, PyTorch CUDA, Gemini)
+2. News Summary & Regional TTS: Multi-dialect voice synthesis (vnTTS, PyTorch CUDA, Gemini)
    -> https://github.com/wokovn/Project-LT-ML-23KHDL1-HCMUS
-3. ISB Multi-Agent & HR: Vault wrapped DEK, blind indexing, ReDoS fix (<200ms)
-4. PetCareX: Advanced 3NF database, Sequential UUID index optimization`
+3. ISB Multi-Agent & Security: Vault wrapped DEK, blind indexing, ReDoS fix (<200ms)
+4. PetCareX: Advanced 3NF schema, Sequential UUID index optimization`
         });
         break;
 
+      case 'telemetry':
       case 'metrics':
         newHistory.push({
           type: 'response',
-          text: coreMetrics.map(m => `• ${m.label}: ${m.value} (${m.detail})`).join('\n')
+          text: coreMetrics.map(m => `✦ ${m.label}: ${m.value} (${m.detail})`).join('\n')
         });
         break;
 
       case 'skills':
         newHistory.push({
           type: 'response',
-          text: `Languages : TypeScript, JavaScript, SQL, Python, Java 21
-Backend   : Node.js (Express 5), Spring Boot 4, FastAPI, WebSockets
-Frontend  : React 19, Next.js 15, Vue 3, Tailwind CSS
-Databases : PostgreSQL, Redis (Lua/PubSub), BullMQ, MSSQL
-DevOps/QA : Docker, Kubernetes HPA, Vitest (5,600+ tests), HashiCorp Vault`
+          text: `LANGUAGES : TypeScript, JavaScript, SQL, Python, Java 21
+BACKEND   : Node.js (Express 5), Spring Boot 4, FastAPI, WebSockets
+FRONTEND  : React 19, Next.js 15, Vue 3, Tailwind CSS, Vite
+DATABASES : PostgreSQL, Redis (Lua/PubSub), BullMQ, MSSQL
+DEVOPS/QA : Docker, Kubernetes HPA, Vitest (5,600+ tests), HashiCorp Vault`
         });
         break;
 
       case 'contact':
         newHistory.push({
           type: 'response',
-          text: `Email    : ${personalInfo.email}
-Phone    : ${personalInfo.phone}
-LinkedIn : ${personalInfo.linkedin}
-GitHub   : ${personalInfo.github}`
+          text: `EMAIL    : ${personalInfo.email}
+PHONE    : ${personalInfo.phone}
+LINKEDIN : ${personalInfo.linkedin}
+GITHUB   : ${personalInfo.github}`
         });
         break;
 
       case 'hire':
       case 'sudo hire':
         confetti({
-          particleCount: 100,
+          particleCount: 80,
           spread: 80,
           origin: { y: 0.5 },
-          colors: ['#00f7f7', '#10b981', '#8b5cf6', '#f59e0b']
+          colors: ['#FFE600', '#FF6584', '#00F0FF', '#4ECCA3', '#A388EE']
         });
         newHistory.push({
           type: 'response',
-          text: `🎉 Congratulations! Access granted.
-Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}.`
+          text: `🎉 ACCESS GRANTED! Let's build together:
+Drop an email to ${personalInfo.email} or call ${personalInfo.phone}.`
         });
         break;
 
@@ -141,7 +141,7 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
       default:
         newHistory.push({
           type: 'error',
-          text: `zsh: command not found: ${cmdText}. Type "help" for a list of commands.`
+          text: `bash: command not found: "${cmdText}". Type "help" for a list of commands.`
         });
         break;
     }
@@ -159,45 +159,45 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div
-        className="w-full max-w-2xl rounded-2xl bg-surface-100 border border-brand-cyan/40 shadow-[0_0_50px_rgba(0,247,247,0.2)] overflow-hidden font-mono flex flex-col max-h-[80vh]"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div 
+        className="w-full max-w-2xl rounded-2xl border-2 border-[#121316] bg-white shadow-neo-2xl overflow-hidden font-mono flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Terminal Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-surface-200 border-b border-surface-border text-xs text-slate-300">
+        <div className="flex items-center justify-between px-4 py-3 bg-neo-yellow border-b-2 border-[#121316] text-xs font-bold text-[#121316]">
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-brand-cyan" />
-            <span className="font-semibold text-white">wokovn-interactive-cli</span>
+            <Terminal className="w-4 h-4" />
+            <span>WOKOVN-RETRO-CLI</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[10px] text-slate-500 hidden sm:inline">Press ESC or type 'exit' to close</span>
+            <span className="text-[10px] text-slate-700 hidden sm:inline">Press ESC to close</span>
             <button
               onClick={onClose}
-              className="p-1 rounded hover:bg-surface-hover text-slate-400 hover:text-white"
+              className="p-1 rounded-lg border border-[#121316] bg-white hover:bg-neo-pink hover:text-white transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
         {/* Output area */}
-        <div className="p-4 overflow-y-auto space-y-2 text-xs flex-1 min-h-[300px]">
+        <div className="p-5 overflow-y-auto space-y-2 text-xs flex-1 min-h-[320px] bg-[#FFFDF7]">
           {history.map((h, i) => (
             <div key={i} className="leading-relaxed">
               {h.type === 'user' && (
-                <div className="text-brand-cyan font-bold">{h.text}</div>
+                <div className="text-black font-black font-mono">{h.text}</div>
               )}
               {h.type === 'response' && (
-                <pre className="text-slate-200 whitespace-pre-wrap font-mono pl-2 border-l border-brand-cyan/30 mt-1">
+                <pre className="text-slate-800 whitespace-pre-wrap font-mono pl-3 border-l-2 border-neo-yellow my-1 font-medium">
                   {h.text}
                 </pre>
               )}
               {h.type === 'system' && (
-                <div className="text-brand-emerald">{h.text}</div>
+                <div className="text-emerald-700 font-bold">{h.text}</div>
               )}
               {h.type === 'error' && (
-                <div className="text-rose-400">{h.text}</div>
+                <div className="text-neo-pink font-bold">{h.text}</div>
               )}
             </div>
           ))}
@@ -205,18 +205,18 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
         </div>
 
         {/* Input prompt */}
-        <form onSubmit={handleSubmit} className="flex items-center gap-2 px-4 py-3 bg-surface-200/80 border-t border-surface-border">
-          <span className="text-brand-emerald font-bold">&gt;</span>
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 px-4 py-3 bg-white border-t-2 border-[#121316]">
+          <span className="text-neo-pink font-black text-sm">&gt;</span>
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type 'help', 'projects', 'metrics', or 'hire'..."
-            className="flex-1 bg-transparent text-white text-xs outline-none placeholder:text-slate-600 font-mono"
+            placeholder="Type 'help', 'projects', 'telemetry', or 'hire'..."
+            className="flex-1 bg-transparent text-[#121316] text-xs outline-none placeholder:text-slate-400 font-mono font-bold"
           />
-          <button type="submit" className="text-slate-500 hover:text-brand-cyan">
-            <CornerDownLeft className="w-3.5 h-3.5" />
+          <button type="submit" className="p-1.5 rounded-lg border border-[#121316] bg-neo-yellow hover:bg-neo-cyan transition-colors">
+            <CornerDownLeft className="w-3.5 h-3.5 text-[#121316]" />
           </button>
         </form>
 
@@ -224,4 +224,3 @@ Let's talk! Drop an email to ${personalInfo.email} or call ${personalInfo.phone}
     </div>
   );
 }
-

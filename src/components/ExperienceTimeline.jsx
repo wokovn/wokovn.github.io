@@ -1,82 +1,77 @@
 import React from 'react';
 import { Briefcase, GraduationCap, CheckCircle2, Calendar, MapPin } from 'lucide-react';
 import { experience } from '../data/portfolioData';
-import SpotlightCard from './SpotlightCard';
 
 export default function ExperienceTimeline() {
   return (
-    <section id="experience" className="py-24 relative z-10 border-t border-white/[0.06]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="experience" className="py-20 relative z-10 border-t-2 border-[#121316] bg-[#FFFDF7]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-brand-emerald uppercase tracking-widest">
-            <span>// 03. TRACK RECORD &amp; ACADEMICS</span>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-purple/30 text-xs font-mono font-bold shadow-neo-sm uppercase">
+              <span>// 02. PROVEN TRACK RECORD</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#121316] mt-3 tracking-tight">
+              WORK &amp; ACADEMICS
+            </h2>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2 tracking-tight">
-            Work Experience &amp; Education
-          </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-2 max-w-2xl">
-            Hands-on software engineering delivering high-security enterprise systems and academic research.
-          </p>
+          <span className="text-xs font-mono font-bold text-slate-600">
+            Enterprise Impact &amp; National University of Science
+          </span>
         </div>
 
-        {/* Timeline List */}
+        {/* Timeline Cards */}
         <div className="space-y-6">
           {experience.map((item, idx) => (
-            <SpotlightCard
+            <div
               key={idx}
-              className="p-6 sm:p-8"
+              className="neo-card p-6 sm:p-8 bg-white shadow-neo-lg space-y-6"
             >
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-6 border-b border-white/[0.08]">
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-4 border-b-2 border-[#121316]">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2.5">
-                    {idx === 0 ? (
-                      <div className="p-2 rounded-lg bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20">
-                        <Briefcase className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="p-2 rounded-lg bg-brand-violet/10 text-brand-violet border border-brand-violet/20">
-                        <GraduationCap className="w-4 h-4" />
-                      </div>
-                    )}
-                    <span className="text-xl sm:text-2xl font-bold text-white">
-                      {item.company}
+                  <div className="flex items-center gap-3">
+                    <span className={`p-2.5 rounded-xl border-2 border-[#121316] font-bold text-lg shadow-neo-sm ${
+                      idx === 0 ? 'bg-neo-yellow' : 'bg-neo-cyan'
+                    }`}>
+                      {idx === 0 ? '💼' : '🎓'}
                     </span>
+                    <div>
+                      <h3 className="text-2xl font-black text-[#121316]">
+                        {item.company}
+                      </h3>
+                      <p className="text-sm font-mono font-bold text-slate-700">
+                        {item.role}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-sm sm:text-base font-semibold text-brand-cyan pl-9 font-mono">
-                    {item.role}
-                  </h3>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-400 pl-9 lg:pl-0">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{item.period}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{item.location}</span>
-                  </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs font-mono font-bold text-slate-600 pl-12 lg:pl-0">
+                  <span className="px-3 py-1 rounded-lg border border-[#121316] bg-slate-50">
+                    📅 {item.period}
+                  </span>
+                  <span className="px-3 py-1 rounded-lg border border-[#121316] bg-slate-50">
+                    📍 {item.location}
+                  </span>
                 </div>
               </div>
 
-              {/* Summary */}
-              <p className="text-sm text-slate-300 mt-4 leading-relaxed font-sans">
+              <p className="text-sm sm:text-base text-slate-800 font-medium leading-relaxed">
                 {item.summary}
               </p>
 
-              {/* Key Achievements Bullets */}
-              <div className="mt-5 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                 {item.achievements.map((ach, aIdx) => (
-                  <div key={aIdx} className="flex items-start gap-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    <CheckCircle2 className="w-4 h-4 text-brand-emerald flex-shrink-0 mt-0.5" />
+                  <div key={aIdx} className="p-3.5 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm text-xs sm:text-sm font-medium text-slate-800 flex items-start gap-2.5 leading-snug">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
                     <span>{ach}</span>
                   </div>
                 ))}
               </div>
 
-            </SpotlightCard>
+            </div>
           ))}
         </div>
 

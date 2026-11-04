@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import MetricsBar from './components/MetricsBar';
-import BentoGrid from './components/BentoGrid';
+import MarqueeBanner from './components/MarqueeBanner';
+import NeobrutalSystems from './components/NeobrutalSystems';
 import ExperienceTimeline from './components/ExperienceTimeline';
 import SkillsMatrix from './components/SkillsMatrix';
 import ContactFooter from './components/ContactFooter';
@@ -12,35 +12,32 @@ export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-slate-100 font-sans selection:bg-brand-cyan/20 selection:text-brand-cyan relative">
+    <div className="min-h-screen bg-[#FFFDF7] text-[#121316] font-sans selection:bg-neo-yellow selection:text-[#121316] relative overflow-x-hidden">
       
-      {/* Background Subtle Grid Pattern */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
-
       {/* Top Navbar */}
       <Navbar onOpenTerminal={() => setTerminalOpen(true)} />
 
-      {/* Hero Section with Three.js Interactive 3D Scene */}
+      {/* Hero Section with Three.js 3D WebGL */}
       <main>
         <Hero onOpenTerminal={() => setTerminalOpen(true)} />
 
-        {/* Engineering Metrics Ribbon */}
-        <MetricsBar />
+        {/* Playful Infinite Marquee Banner */}
+        <MarqueeBanner />
 
-        {/* Bento Grid Architecture Showcase */}
-        <BentoGrid />
+        {/* Interactive Architecture Lab (ArkNet, TTS, ISB, PetCareX) */}
+        <NeobrutalSystems />
 
         {/* Experience & Education */}
         <ExperienceTimeline />
 
-        {/* Technical Skills Matrix */}
+        {/* Technical Skills Arsenal */}
         <SkillsMatrix />
       </main>
 
       {/* Contact & Footer */}
       <ContactFooter onOpenTerminal={() => setTerminalOpen(true)} />
 
-      {/* Interactive Terminal HUD Modal (Cmd+K) */}
+      {/* Retro Terminal HUD Modal (Cmd+K) */}
       <TerminalHUD isOpen={terminalOpen} onClose={() => setTerminalOpen(false)} />
 
     </div>

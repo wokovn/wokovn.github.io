@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function ThreeScene() {
   const mountRef = useRef(null);
+  const [clickCount, setClickCount] = useState(0);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -16,7 +17,7 @@ export default function ThreeScene() {
       0.1,
       1000
     );
-    camera.position.z = 6.5;
+    camera.position.set(0, 0, 7);
 
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
@@ -25,163 +26,158 @@ export default function ThreeScene() {
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
     container.appendChild(renderer.domElement);
 
-    // Group to hold all 3D objects for coordinated rotation
-    const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
+    // Group for coordinated movement
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
 
-    // 1. Central Core - Wireframe Polyhedron (The Distributed Node Core)
-    const coreGeo = new THREE.IcosahedronGeometry(1.8, 1);
-    const wireframeMat = new THREE.MeshBasicMaterial({
-      color: 0x00f7f7,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.35,
+    // 1. Neobrutalist Floating Centerpiece: Chunky Wireframe Icosahedron
+    const coreGeo = new THREE.IcosahedronGeometry(1.6, 1);
+    
+    // Solid flat colored inner mesh
+    const innerMat = new THREE.MeshBasicMaterial({ 
+      color: 0xFFE600, // Neo Yellow
     });
-    const coreMesh = new THREE.Mesh(coreGeo, wireframeMat);
-    worldGroup.add(coreMesh);
+    const innerMesh = new THREE.Mesh(coreGeo, innerMat);
+    mainGroup.add(innerMesh);
 
-    // Inner glowing sphere
-    const innerGeo = new THREE.IcosahedronGeometry(1.2, 2);
-    const innerMat = new THREE.MeshBasicMaterial({
-      color: 0x8b5cf6,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25,
+    // Chunky black wireframe outline (signature neobrutal look!)
+    const wireGeo = new THREE.WireframeGeometry(coreGeo);
+    const wireMat = new THREE.LineBasicMaterial({ 
+      color: 0x121316, 
+      linewidth: 3 
     });
-    const innerMesh = new THREE.Mesh(innerGeo, innerMat);
-    worldGroup.add(innerMesh);
+    const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
+    wireMesh.scale.set(1.02, 1.02, 1.02);
+    mainGroup.add(wireMesh);
 
-    // 2. Vertex Nodes (Glowing point vertices)
-    const positions = coreGeo.attributes.position;
-    const nodeGeo = new THREE.SphereGeometry(0.045, 8, 8);
-    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x00f7f7 });
-    const nodesGroup = new THREE.Group();
+    // 2. Playful Satellite Geometries (Torus, Cube, Dodecahedron)
+    const sat1Geo = new THREE.TorusGeometry(0.5, 0.2, 8, 16);
+    const sat1Mat = new THREE.MeshBasicMaterial({ color: 0x00F0FF }); // Neo Cyan
+    const sat1 = new THREE.Mesh(sat1Geo, sat1Mat);
+    sat1.position.set(2.4, 1.2, -0.5);
+    const sat1Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat1Geo), wireMat);
+    sat1.add(sat1Wire);
+    mainGroup.add(sat1);
 
-    for (let i = 0; i < positions.count; i++) {
-      const x = positions.getX(i);
-      const y = positions.getY(i);
-      const z = positions.getZ(i);
-      const node = new THREE.Mesh(nodeGeo, nodeMat);
-      node.position.set(x, y, z);
-      nodesGroup.add(node);
-    }
-    worldGroup.add(nodesGroup);
+    const sat2Geo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+    const sat2Mat = new THREE.MeshBasicMaterial({ color: 0xFF6584 }); // Neo Pink
+    const sat2 = new THREE.Mesh(sat2Geo, sat2Mat);
+    sat2.position.set(-2.5, -1.0, 0.5);
+    const sat2Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat2Geo), wireMat);
+    sat2.add(sat2Wire);
+    mainGroup.add(sat2);
 
-    // 3. Orbital Ring Particles (Event Horizon / Distributed Data Stream)
-    const particleCount = 1200;
+    const sat3Geo = new THREE.OctahedronGeometry(0.6);
+    const sat3Mat = new THREE.MeshBasicMaterial({ color: 0xA388EE }); // Neo Purple
+    const sat3 = new THREE.Mesh(sat3Geo, sat3Mat);
+    sat3.position.set(1.8, -1.8, 0.8);
+    const sat3Wire = new THREE.LineSegments(new THREE.WireframeGeometry(sat3Geo), wireMat);
+    sat3.add(sat3Wire);
+    mainGroup.add(sat3);
+
+    // 3. Playful Pop Floating Confetti / Particles
+    const particleCount = 200;
     const particleGeo = new THREE.BufferGeometry();
-    const particlePos = new Float32Array(particleCount * 3);
-    const particleColors = new Float32Array(particleCount * 3);
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
 
-    const cyanColor = new THREE.Color(0x00f7f7);
-    const violetColor = new THREE.Color(0x8b5cf6);
-    const emeraldColor = new THREE.Color(0x10b981);
+    const palette = [
+      new THREE.Color(0xFFE600),
+      new THREE.Color(0xFF6584),
+      new THREE.Color(0x00F0FF),
+      new THREE.Color(0xA388EE),
+      new THREE.Color(0x121316),
+    ];
 
     for (let i = 0; i < particleCount; i++) {
-      // Ring distribution with random spread
-      const radius = 2.4 + Math.random() * 2.8;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = (Math.random() - 0.5) * 0.8;
+      positions[i * 3] = (Math.random() - 0.5) * 8;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
 
-      const x = radius * Math.cos(theta);
-      const y = radius * Math.sin(phi) * 1.2;
-      const z = radius * Math.sin(theta);
-
-      particlePos[i * 3] = x;
-      particlePos[i * 3 + 1] = y;
-      particlePos[i * 3 + 2] = z;
-
-      // Color variation
-      const mixRatio = Math.random();
-      const chosenColor = mixRatio < 0.5 ? cyanColor : (mixRatio < 0.8 ? violetColor : emeraldColor);
-      particleColors[i * 3] = chosenColor.r;
-      particleColors[i * 3 + 1] = chosenColor.g;
-      particleColors[i * 3 + 2] = chosenColor.b;
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
     }
 
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-    particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.035,
+      size: 0.1,
       vertexColors: true,
-      transparent: true,
-      opacity: 0.75,
-      blending: THREE.AdditiveBlending,
+      transparent: false,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
-    worldGroup.add(particles);
+    mainGroup.add(particles);
 
-    // 4. Mouse interaction with smooth interpolation (Lerp)
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    // 4. Mouse Tracking & Physics
+    let targetRotationX = 0;
+    let targetRotationY = 0;
 
     const handleMouseMove = (e) => {
       const rect = container.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      targetX = x * 0.7;
-      targetY = y * 0.7;
+      targetRotationY = x * 0.9;
+      targetRotationX = y * 0.6;
     };
 
-    // Shockwave pulse on click
-    let pulseScale = 1;
-    let isPulsing = false;
+    // On Click: Fun bounce impulse
+    let bounceImpulse = 0;
     const handleClick = () => {
-      isPulsing = true;
-      pulseScale = 1;
+      bounceImpulse = 0.35;
+      setClickCount(prev => prev + 1);
     };
 
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('click', handleClick);
 
-    // Resize handling with ResizeObserver
     const handleResize = () => {
       if (!container) return;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      camera.aspect = width / height;
+      camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
+      renderer.setSize(container.clientWidth, container.clientHeight);
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
 
-    // Animation loop
     let animationFrameId;
     let clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+      const elapsed = clock.getElapsedTime();
 
-      // Smooth mouse follow
-      mouseX += (targetX - mouseX) * 0.05;
-      mouseY += (targetY - mouseY) * 0.05;
+      // Smooth damping
+      mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.05 + 0.005;
+      mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.05;
 
-      worldGroup.rotation.y = elapsedTime * 0.12 + mouseX * 0.8;
-      worldGroup.rotation.x = elapsedTime * 0.06 - mouseY * 0.8;
-
-      // Polyhedron breathing animation
-      const scaleBreath = 1 + Math.sin(elapsedTime * 1.5) * 0.03;
-      coreMesh.scale.set(scaleBreath, scaleBreath, scaleBreath);
-      innerMesh.rotation.y = -elapsedTime * 0.25;
-
-      // Handle shockwave click pulse
-      if (isPulsing) {
-        pulseScale += 0.04;
-        wireframeMat.opacity = Math.max(0.2, 0.8 - (pulseScale - 1) * 0.6);
-        if (pulseScale > 1.8) {
-          isPulsing = false;
-          wireframeMat.opacity = 0.35;
-        }
+      // Bounce impulse decay
+      if (bounceImpulse > 0) {
+        bounceImpulse *= 0.92;
+        if (bounceImpulse < 0.01) bounceImpulse = 0;
       }
+
+      // Wobble & orbit satellites
+      sat1.rotation.x = elapsed * 1.2;
+      sat1.rotation.y = elapsed * 0.8;
+      sat1.position.y = 1.2 + Math.sin(elapsed * 2) * 0.25;
+
+      sat2.rotation.x = -elapsed * 0.9;
+      sat2.rotation.z = elapsed * 1.1;
+      sat2.position.x = -2.5 + Math.cos(elapsed * 1.8) * 0.2;
+
+      sat3.rotation.y = elapsed * 1.5;
+      sat3.position.y = -1.8 + Math.cos(elapsed * 2.2) * 0.25;
+
+      // Core Scale Pulse
+      const scale = 1 + Math.sin(elapsed * 3) * 0.04 + bounceImpulse;
+      innerMesh.scale.set(scale, scale, scale);
+      wireMesh.scale.set(scale * 1.02, scale * 1.02, scale * 1.02);
 
       renderer.render(scene, camera);
     };
@@ -197,24 +193,27 @@ export default function ThreeScene() {
         container.removeChild(renderer.domElement);
       }
       coreGeo.dispose();
-      innerGeo.dispose();
-      nodeGeo.dispose();
-      particleGeo.dispose();
-      wireframeMat.dispose();
       innerMat.dispose();
-      nodeMat.dispose();
+      wireGeo.dispose();
+      wireMat.dispose();
+      sat1Geo.dispose();
+      sat1Mat.dispose();
+      sat2Geo.dispose();
+      sat2Mat.dispose();
+      sat3Geo.dispose();
+      sat3Mat.dispose();
+      particleGeo.dispose();
       particleMat.dispose();
       renderer.dispose();
     };
   }, []);
 
   return (
-    <div className="relative w-full h-full min-h-[420px] lg:min-h-[560px] flex items-center justify-center cursor-grab active:cursor-grabbing select-none">
+    <div className="relative w-full h-full min-h-[400px] lg:min-h-[500px] flex items-center justify-center cursor-pointer select-none">
       <div ref={mountRef} className="w-full h-full absolute inset-0" />
-      {/* 3D Canvas HUD Info pill */}
-      <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 backdrop-blur-md text-[11px] font-mono text-slate-400 pointer-events-none">
-        <span className="w-2 h-2 rounded-full bg-brand-cyan animate-ping" />
-        <span>Three.js WebGL • Interactive Node Core</span>
+      {/* Playful Floating Badge */}
+      <div className="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm transform rotate-2 hover:rotate-0 transition-transform">
+        <span>👾 Click 3D core! ({clickCount})</span>
       </div>
     </div>
   );
