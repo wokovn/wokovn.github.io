@@ -1,199 +1,281 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowUpRight, Copy, Check, Terminal, GraduationCap, Briefcase, Zap, ShieldCheck, Activity, Cpu } from 'lucide-react';
-import { personalInfo } from '../data/portfolioData';
-import ThreeScene from './ThreeScene';
-import confetti from 'canvas-confetti';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowDownRight,
+  Mail,
+  Terminal,
+  MapPin,
+  Briefcase,
+  GraduationCap
+} from 'lucide-react';
+import { personalInfo, coreMetrics } from '../data/portfolioData';
+import HeroCanvasMatrix from './HeroCanvasMatrix';
+import HeroArchitectureStage from './HeroArchitectureStage';
+import {
+  MaskReveal,
+  MagneticButton,
+  SpotlightBentoCard,
+  AnimatedNumber
+} from './MotionPrimitives';
+import { sfx } from '../utils/sfx';
 
-export default function Hero({ onOpenTerminal }) {
-  const [copied, setCopied] = useState(false);
+export default function Hero({ onOpenTerminal, onNavigateContact, theme }) {
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [clockStr, setClockStr] = useState('');
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(personalInfo.email);
-    setCopied(true);
-    confetti({
-      particleCount: 60,
-      spread: 70,
-      origin: { y: 0.8 },
-      colors: ['#FFE600', '#FF6584', '#00F0FF', '#4ECCA3', '#A388EE']
-    });
-    setTimeout(() => setCopied(false), 2500);
-  };
+  useEffect(() => {
+    const t = setInterval(() => {
+      setRoleIdx((prev) => (prev + 1) % personalInfo.roles.length);
+    }, 3200);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    const updateClock = () => {
+      setClockStr(
+        new Date().toLocaleTimeString('en-GB', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+      );
+    };
+    updateClock();
+    const id = setInterval(updateClock, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
-    <section className="relative pt-24 pb-8 md:pt-28 md:pb-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-          
-          {/* Left Column: Playful Neobrutal Identity & Specs */}
-          <motion.div 
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 space-y-4 sm:space-y-5"
-          >
-            {/* Top Playful Badge Cluster - ZERO EMOJIS */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-green font-mono text-xs font-bold shadow-neo-sm">
-                <span className="w-2 h-2 rounded-full bg-white border border-[#121316] animate-ping" />
-                <Zap className="w-3.5 h-3.5 text-[#121316]" />
-                <span>OPEN FOR SDE ROLES</span>
+    <section className="relative pt-20 pb-8 md:pt-28 md:pb-12 overflow-x-clip">
+      <HeroCanvasMatrix theme={theme} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Metadata Telemetry Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-5 md:pb-5 md:mb-7 border-b border-[var(--border-hairline)] text-[11px] font-mono text-[var(--text-muted)]"
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="swiss-pill text-[var(--text-primary)]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>OPEN FOR FULL-STACK / SWE ROLES</span>
+            </span>
+            <span className="swiss-pill">
+              <Briefcase className="w-3 h-3 text-[var(--signal)]" />
+              <span>ISB VIETNAM INTERN</span>
+            </span>
+            <span className="swiss-pill">
+              <GraduationCap className="w-3 h-3" />
+              <span>HCMUS IT · GPA {personalInfo.gpa}</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 tabular-nums">
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-[var(--signal)]" />
+              <span>Ho Chi Minh City · {clockStr || 'GMT+7'}</span>
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Main Split Hero */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <div className="space-y-4">
+              <div className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[var(--text-muted)] flex items-center gap-2">
+                <span>SOFTWARE ENGINEER //</span>
+                <div className="h-5 relative overflow-hidden inline-flex items-center">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={roleIdx}
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -14, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      className="text-[var(--signal)] font-bold"
+                    >
+                      {personalInfo.roles[roleIdx]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-yellow font-mono text-xs font-bold shadow-neo-sm transform -rotate-1 hover:rotate-0 transition-transform">
-                <GraduationCap className="w-3.5 h-3.5 text-[#121316]" />
-                <span>HCMUS IT (GPA {personalInfo.gpa})</span>
-              </div>
-
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] bg-neo-pink text-white font-mono text-xs font-bold shadow-neo-sm transform rotate-1 hover:rotate-0 transition-transform">
-                <Briefcase className="w-3.5 h-3.5 text-white" />
-                <span>ISB VIETNAM INTERN</span>
-              </div>
-            </div>
-
-            {/* Giant Punchy Headline - Solid Single Line on Desktop */}
-            <div className="space-y-2">
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-[#121316] tracking-tight leading-none whitespace-nowrap">
-                NGUYỄN ANH KHOA
+              <h1 className="font-display text-4xl sm:text-6xl xl:text-[64px] font-bold tracking-[-0.03em] leading-[1.12] pt-1">
+                <MaskReveal delay={0.05}>NGUYỄN</MaskReveal>
+                <br />
+                <MaskReveal delay={0.14}>
+                  <span>ANH KHOA</span>
+                  <span className="text-[var(--signal)]">.</span>
+                </MaskReveal>
               </h1>
-              <div className="inline-block px-3 py-1 bg-neo-yellow border-2 border-[#121316] shadow-neo transform -rotate-1">
-                <p className="text-sm sm:text-xl font-black font-mono uppercase text-[#121316]">
-                  SOFTWARE ENGINEER • SYSTEMS &amp; AI
-                </p>
-              </div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.22 }}
+                className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed max-w-2xl"
+              >
+                {personalInfo.summary}
+              </motion.p>
             </div>
 
-            {/* Sharp, Informative Engineering Summary */}
-            <p className="text-sm sm:text-base text-slate-800 leading-relaxed max-w-2xl font-medium">
-              I build <span className="bg-neo-cyan px-1.5 py-0.5 border border-[#121316] font-bold">high-throughput distributed backends</span>, event-driven pipelines, and <span className="bg-neo-purple/30 px-1.5 py-0.5 border border-[#121316] font-bold">autonomous Multi-Agent systems</span>. Hands-on experience optimizing systems under 350 concurrent VUs and delivering production security architecture at ISB Vietnam.
-            </p>
+            {/* 2x2 Plain-English Business Impact Cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.28 }}
+              className="grid grid-cols-2 gap-2.5 sm:gap-3"
+            >
+              {coreMetrics.map((metric) => (
+                <SpotlightBentoCard key={metric.id} className="p-3 sm:p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[10px] font-mono font-bold text-[var(--signal)] tracking-wide">
+                      {metric.label}
+                    </span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-well)] text-[var(--text-primary)] border border-[var(--border-hairline)] hidden sm:inline">
+                      {metric.badge}
+                    </span>
+                  </div>
 
-            {/* Key Micro-Widgets: 2x2 Clean Balanced Grid */}
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
-              <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-0.5">
-                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
-                  <Activity className="w-3 h-3 text-neo-pink" />
-                  <span>THROUGHPUT</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base sm:text-lg font-black text-[#121316] font-mono">87.2 RPS</span>
-                  <span className="text-[10px] text-slate-600 font-bold truncate">350 VUs (K8s HPA)</span>
-                </div>
-              </div>
+                  <div className="mt-1.5 sm:mt-2 flex items-end justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-xl sm:text-3xl font-display font-bold tracking-tight">
+                        <AnimatedNumber
+                          value={metric.numericValue}
+                          decimals={metric.decimals}
+                          prefix={metric.prefix || ''}
+                          suffix={metric.suffix || ''}
+                        />
+                      </div>
+                      <p className="text-[11px] text-[var(--text-muted)] mt-0.5 leading-snug">
+                        {metric.detail}
+                      </p>
+                    </div>
 
-              <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-0.5">
-                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                  <span>TEST HARNESS</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base sm:text-lg font-black text-[#121316] font-mono">5,600+</span>
-                  <span className="text-[10px] text-slate-600 font-bold truncate">Vitest + Docker CI</span>
-                </div>
-              </div>
+                    <div className="hidden sm:flex items-end gap-[3px] h-7 pb-0.5 shrink-0">
+                      {metric.spark.map((val, i) => (
+                        <span
+                          key={i}
+                          style={{ height: `${Math.max(18, Math.min(100, val))}%` }}
+                          className={`w-[3px] rounded-full transition-colors duration-300 ${
+                            i === metric.spark.length - 1
+                              ? 'bg-[var(--signal)]'
+                              : 'bg-[var(--border-strong)] group-hover:bg-[var(--text-primary)]'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </SpotlightBentoCard>
+              ))}
+            </motion.div>
 
-              <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-0.5">
-                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
-                  <Cpu className="w-3 h-3 text-neo-purple" />
-                  <span>MULTI-AGENT</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base sm:text-lg font-black text-[#121316] font-mono">5.8x Rows</span>
-                  <span className="text-[10px] text-slate-600 font-bold truncate">SQLite Sandboxes</span>
-                </div>
-              </div>
+            {/* Crystal-clear Guided Reading CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5 pt-1"
+            >
+              <MagneticButton>
+                <a
+                  href="#experience"
+                  onClick={() => sfx.playTick(700)}
+                  className="swiss-btn-primary w-full sm:w-auto justify-center"
+                >
+                  <span>START: WORK &amp; EDUCATION</span>
+                  <ArrowDownRight className="w-4 h-4" />
+                </a>
+              </MagneticButton>
 
-              <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-0.5">
-                <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500 font-bold">
-                  <Zap className="w-3 h-3 text-amber-500" />
-                  <span>SECURITY &amp; REDOS</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base sm:text-lg font-black text-[#121316] font-mono">&lt;200ms</span>
-                  <span className="text-[10px] text-slate-600 font-bold truncate">Vault Wrapped DEK</span>
-                </div>
-              </div>
-            </div>
+              <MagneticButton>
+                <button
+                  onClick={() => {
+                    sfx.playTick(760);
+                    onNavigateContact();
+                  }}
+                  className="swiss-btn-secondary w-full sm:w-auto justify-center"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[var(--signal)]" />
+                  <span>CONTACT / INTERVIEW</span>
+                </button>
+              </MagneticButton>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <a
-                href="#systems"
-                className="neo-btn-primary text-sm sm:text-base py-2.5 px-4"
-              >
-                <span>EXPLORE ARCHITECTURES</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
+              <MagneticButton>
+                <button
+                  onClick={() => {
+                    sfx.playTick(780);
+                    onOpenTerminal();
+                  }}
+                  className="swiss-btn-secondary"
+                >
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>CLI [⌘K]</span>
+                </button>
+              </MagneticButton>
+            </motion.div>
+          </div>
 
-              <button
-                onClick={handleCopyEmail}
-                className="neo-btn-secondary text-sm sm:text-base py-2.5 px-4"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>COPIED EMAIL!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4 text-slate-600" />
-                    <span>COPY EMAIL</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={onOpenTerminal}
-                className="neo-btn-cyan text-xs font-mono py-2.5 px-3"
-              >
-                <Terminal className="w-4 h-4" />
-                <span>TERMINAL [Cmd+K]</span>
-              </button>
-            </div>
-
-          </motion.div>
-
-          {/* Right Column: Three.js in a Neo-Brutalist Computer Window */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.65, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5"
           >
-            <div className="neo-card overflow-hidden bg-white shadow-neo-xl border-2 border-[#121316]">
-              
-              {/* Window Header */}
-              <div className="px-4 py-2.5 border-b-2 border-[#121316] bg-neo-yellow flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full border-2 border-[#121316] bg-neo-pink" />
-                  <div className="w-3 h-3 rounded-full border-2 border-[#121316] bg-neo-cyan" />
-                  <div className="w-3 h-3 rounded-full border-2 border-[#121316] bg-neo-green" />
-                  <span className="ml-2 font-mono font-bold text-xs text-[#121316]">
-                    interactive_cluster.obj
-                  </span>
-                </div>
-                <div className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white border border-[#121316]">
-                  THREE.JS
-                </div>
-              </div>
-
-              {/* ThreeScene canvas viewport */}
-              <div className="relative bg-[#FFFDF7] p-2">
-                <ThreeScene />
-              </div>
-
-              {/* Window Footer Status */}
-              <div className="px-4 py-2 border-t-2 border-[#121316] bg-white flex items-center justify-between text-[10px] font-mono text-slate-600">
-                <span>FPS: 60 • Drag or Click 3D shapes</span>
-                <span className="font-bold text-[#121316]">PLAYFUL WEBGL</span>
-              </div>
-
-            </div>
+            <HeroArchitectureStage onNavigateContact={onNavigateContact} />
           </motion.div>
-
         </div>
 
+        {/* Clear 3-Step Reading Guide Strip for Non-Tech HR & Engineering Managers */}
+        <div className="mt-8 pt-6 border-t border-[var(--border-hairline)] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <a
+            href="#experience"
+            onClick={() => sfx.playTick(680)}
+            className="bento-card p-3.5 hover:border-[var(--signal)] transition-colors flex items-center justify-between gap-2"
+          >
+            <div>
+              <span className="font-mono text-[10px] font-bold text-[var(--signal)] block">
+                STEP 01 · FOR RECRUITERS
+              </span>
+              <span className="font-bold">Work Experience &amp; Education</span>
+            </div>
+            <ArrowDownRight className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
+          </a>
+
+          <a
+            href="#systems"
+            onClick={() => sfx.playTick(700)}
+            className="bento-card p-3.5 hover:border-[var(--signal)] transition-colors flex items-center justify-between gap-2"
+          >
+            <div>
+              <span className="font-mono text-[10px] font-bold text-[var(--signal)] block">
+                STEP 02 · STICKY SHOWCASE
+              </span>
+              <span className="font-bold">5 Interactive Architecture Labs</span>
+            </div>
+            <ArrowDownRight className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
+          </a>
+
+          <button
+            type="button"
+            onClick={() => {
+              sfx.playTick(740);
+              onNavigateContact();
+            }}
+            className="bento-card p-3.5 hover:border-[var(--signal)] transition-colors flex items-center justify-between gap-2 text-left"
+          >
+            <div>
+              <span className="font-mono text-[10px] font-bold text-[var(--signal)] block">
+                STEP 03 · DEDICATED PAGE
+              </span>
+              <span className="font-bold">Schedule Call &amp; Contact</span>
+            </div>
+            <ArrowDownRight className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
+          </button>
+        </div>
       </div>
     </section>
   );

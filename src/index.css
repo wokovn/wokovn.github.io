@@ -3,71 +3,171 @@
 @tailwind utilities;
 
 :root {
+  --bg-canvas: #F4F3EE;
+  --bg-surface: #FFFFFF;
+  --bg-well: #EAE8E0;
+  --text-primary: #0C0C0E;
+  --text-muted: #5D5D66;
+  --border-hairline: rgba(12, 12, 14, 0.13);
+  --border-strong: rgba(12, 12, 14, 0.35);
+  --grid-minor: rgba(12, 12, 14, 0.045);
+  --grid-major: rgba(12, 12, 14, 0.09);
+  --spotlight: rgba(255, 59, 0, 0.065);
+  --signal: #FF3B00;
   color-scheme: light;
 }
 
+.dark {
+  --bg-canvas: #09090B;
+  --bg-surface: #111114;
+  --bg-well: #18181D;
+  --text-primary: #F4F4F6;
+  --text-muted: #9494A0;
+  --border-hairline: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.28);
+  --grid-minor: rgba(255, 255, 255, 0.032);
+  --grid-major: rgba(255, 255, 255, 0.065);
+  --spotlight: rgba(255, 77, 26, 0.09);
+  --signal: #FF4D1A;
+  color-scheme: dark;
+}
+
 body {
-  background-color: #FFFDF7;
-  background-image: 
-    radial-gradient(#121316 1.2px, transparent 1.2px);
-  background-size: 28px 28px;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
   background-attachment: fixed;
-  color: #121316;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Neo-Brutalist Component Helpers */
+::selection {
+  background-color: var(--signal);
+  color: #FFFFFF;
+}
+
 @layer components {
-  .neo-card {
-    @apply border-2 border-[#121316] bg-white rounded-2xl shadow-neo transition-all duration-200;
-  }
-  
-  .neo-card-interactive {
-    @apply border-2 border-[#121316] bg-white rounded-2xl shadow-neo transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-neo-sm;
+  .bento-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    @apply rounded-2xl transition-colors duration-200;
   }
 
-  .neo-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-[#121316] bg-neo-yellow text-[#121316] font-bold text-sm tracking-tight shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-neo-sm transition-all select-none;
+  .bento-well {
+    background-color: var(--bg-well);
+    border: 1px solid var(--border-hairline);
+    @apply rounded-xl;
   }
 
-  .neo-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-[#121316] bg-white text-[#121316] font-bold text-sm tracking-tight shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-neo-sm transition-all select-none;
+  .swiss-pill {
+    border: 1px solid var(--border-hairline);
+    background-color: var(--bg-surface);
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-semibold tracking-tight;
   }
 
-  .neo-btn-cyan {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-[#121316] bg-neo-cyan text-[#121316] font-bold text-sm tracking-tight shadow-neo hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-neo-lg active:translate-x-0.5 active:translate-y-0.5 active:shadow-neo-sm transition-all select-none;
+  .swiss-tag {
+    border: 1px solid var(--border-hairline);
+    background-color: var(--bg-well);
+    color: var(--text-primary);
+    @apply inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-medium;
   }
 
-  .neo-pill {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-[#121316] text-xs font-mono font-bold shadow-neo-sm bg-white;
+  .swiss-btn-primary {
+    background-color: var(--text-primary);
+    color: var(--bg-canvas);
+    border: 1px solid var(--text-primary);
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-mono font-semibold text-xs tracking-tight transition-all select-none;
   }
 
-  .neo-tag {
-    @apply px-2.5 py-1 rounded-lg border border-[#121316] text-xs font-mono font-medium bg-white shadow-[2px_2px_0px_#121316];
+  .swiss-btn-primary:hover {
+    background-color: var(--signal);
+    border-color: var(--signal);
+    color: #FFFFFF;
+  }
+
+  .swiss-btn-secondary {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 2px 0 rgba(12, 12, 14, 0.12);
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-mono font-semibold text-xs tracking-tight transition-all select-none cursor-pointer;
+  }
+
+  .dark .swiss-btn-secondary {
+    box-shadow: 0 2px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .swiss-btn-secondary:hover {
+    border-color: var(--signal);
+    background-color: var(--bg-well);
+    transform: translateY(-1px);
+  }
+
+  .swiss-btn-secondary:active {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+
+  .tactile-chip {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 2px 0 rgba(12, 12, 14, 0.13);
+    @apply cursor-pointer transition-all duration-150 select-none;
+  }
+
+  .dark .tactile-chip {
+    box-shadow: 0 2px 0 rgba(255, 255, 255, 0.13);
+  }
+
+  .tactile-chip:hover {
+    border-color: var(--signal);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 0 rgba(255, 59, 0, 0.25);
+  }
+
+  .tactile-chip:active {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+
+  .tactile-chip-active {
+    background-color: var(--text-primary);
+    color: var(--bg-canvas);
+    border: 1px solid var(--text-primary);
+    box-shadow: 0 2px 0 var(--signal);
+    @apply cursor-pointer transition-all duration-150 select-none;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Hairline Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFFDF7;
-  border-left: 2px solid #121316;
+  background: var(--bg-canvas);
+  border-left: 1px solid var(--border-hairline);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFE600;
-  border: 2px solid #121316;
-  border-radius: 4px;
+  background: var(--border-strong);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF6584;
+  background: var(--signal);
 }
 
-/* Monospace font standard */
 pre, code, kbd {
-  font-family: 'Space Mono', 'Fira Code', monospace;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

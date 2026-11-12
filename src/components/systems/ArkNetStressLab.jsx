@@ -1,549 +1,541 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { 
-  Server, 
-  Cpu, 
-  AlertCircle, 
-  CheckCircle2, 
-  Zap, 
-  Layers, 
-  Activity, 
-  ExternalLink, 
-  Globe, 
+import React, { useEffect, useId, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Activity,
+  Check,
+  Copy,
+  ExternalLink,
+  Layers,
+  Pause,
+  Play,
+  Server,
   Terminal,
-  Clock
+  Zap
 } from 'lucide-react';
 import { GithubIcon } from '../Icons';
+import { SpotlightBentoCard } from '../MotionPrimitives';
+import { sfx } from '../../utils/sfx';
 
 export default function ArkNetStressLab({ arknet }) {
-  const trackRef = useRef(null);
-  const [arkStage, setArkStage] = useState(0); // 0: Fixed 2 Pods, 1: K8s HPA (10 Pods), 2: BullMQ Decoupled
-  const [activeStep, setActiveStep] = useState(0);
+  const sliderId = useId();
+  const [vus, setVus] = useState(350);
+  const [hpaEnabled, setHpaEnabled] = useState(true);
+  const [queueEnabled, setQueueEnabled] = useState(true);
+  const [activeStep, setActiveStep] = useState(2);
+  const [copiedLua, setCopiedLua] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [demoStep, setDemoStep] = useState(1);
 
-  // Framer Motion scroll tracking for desktop scrollytelling
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start start", "end end"]
-  });
+  useEffect(() => {
+    if (!autoPlay) return undefined;
+    const states = [
+      { vus: 350, hpa: false, queue: false, layer: 1 },
+      { vus: 350, hpa: true, queue: true, layer: 3 },
+      { vus: 480, hpa: true, queue: true, layer: 4 }
+    ];
+    const timer = setInterval(() => {
+      setDemoStep((prev) => {
+        const nextIdx = (prev + 1) % states.length;
+        const s = states[nextIdx];
+        setVus(s.vus);
+        setHpaEnabled(s.hpa);
+        setQueueEnabled(s.queue);
+        setActiveStep(s.layer);
+        return nextIdx;
+      });
+    }, 3200);
+    return () => clearInterval(timer);
+  }, [autoPlay]);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.33) {
-      setArkStage(0);
-    } else if (latest < 0.66) {
-      setArkStage(1);
+  // Calibrated simulation anchored on measured 350 VUs benchmarks:
+  // Baseline (2 pods, no HPA): 36.0 RPS, 28.4% error, 34.5% media success
+  // Optimized (10 pods HPA + BullMQ + Redis Lua): 87.2 RPS, 0.8% error, 86.2% media success
+  const sim = useMemo(() => {
+    const baseCap = queueEnabled ? 185 : 130;
+    const hpaMaxPods = hpaEnabled ? Math.min(10, Math.max(2, Math.ceil(vus / 38))) : 2;
+    const maxCapacityVus = baseCap * (hpaMaxPods / 2);
+    const loadRatio = vus / maxCapacityVus;
+    const overload = Math.max(0, loadRatio - 0.85);
+
+    let rps;
+    let errorRate;
+    let mediaRate;
+    let p95Ms;
+
+    if (vus === 350 && !hpaEnabled && !queueEnabled) {
+      rps = 36.0;
+      errorRate = 28.4;
+      mediaRate = 34.5;
+      p95Ms = 4200;
+    } else if (vus === 350 && hpaEnabled && queueEnabled) {
+      rps = 87.2;
+      errorRate = 0.8;
+      mediaRate = 86.2;
+      p95Ms = 185;
     } else {
-      setArkStage(2);
+      const targetRps = vus * 0.252;
+      const effFactor = overload > 0 ? 1 / (1 + overload * 1.9) : 1;
+      rps = Number(Math.max(12, targetRps * effFactor * (queueEnabled ? 1 : 0.72)).toFixed(1));
+      errorRate = Number(
+        Math.min(48, Math.max(0.2, overload * 34 + (queueEnabled ? 0.4 : 4.2))).toFixed(1)
+      );
+      mediaRate = Number(
+        Math.max(
+          18,
+          Math.min(97, (queueEnabled ? 93 : 56) - overload * 48)
+        ).toFixed(1)
+      );
+      p95Ms = Math.round(95 + (queueEnabled ? 0 : 260) + overload * 4600);
     }
-  });
 
-  const stages = [
-    {
-      id: 0,
-      badge: "STAGE 01",
-      title: "Fixed Replicas (2 Pods)",
-      statusLabel: "RESOURCE SATURATION • 28.4% ERRORS",
-      statusColor: "bg-rose-500 text-white",
-      incidentTitle: "Traffic Surge Overload (350 VUs)",
-      problem: "2 static API pods hit 100% CPU saturation under 350 concurrent users. 28.4% of incoming requests dropped due to connection queue overflow.",
-      resolution: "Static instances fail under bursts. Horizontal Pod Autoscaler (HPA) required to autoscale replicas based on live CPU/memory metrics."
-    },
-    {
-      id: 1,
-      badge: "STAGE 02",
-      title: "Kubernetes HPA (10 Pods)",
-      statusLabel: "10 REPLICAS AUTOSCALED • +242% BOOST",
-      statusColor: "bg-neo-green text-[#121316]",
-      incidentTitle: "Elastic Workload Autoscaling",
-      problem: "Horizontal Pod Autoscaler monitors CPU/RAM via Kubernetes Metrics Server, scaling from 2 to 10 pods within seconds.",
-      resolution: "Throughput boosted 2.42x to 87.2 RPS, error rate dropped to 0.8%, safely serving 158,000+ total requests."
-    },
-    {
-      id: 2,
-      badge: "STAGE 03",
-      title: "BullMQ + Redis Lua",
-      statusLabel: "DECOUPLED ASYNC WORKERS",
-      statusColor: "bg-neo-yellow text-[#121316]",
-      incidentTitle: "Isolating Heavy Workloads from Main Thread",
-      problem: "Feed fanout, ranking computations, and media transcoding on the HTTP thread would block the Node.js event loop.",
-      resolution: "Offloaded heavy tasks to 9 BullMQ worker queues; executed atomic time-decay ranking scripts directly in Redis via Lua (<1ms)."
-    }
-  ];
+    const cpuPerPod = Math.min(
+      100,
+      Math.round((vus / (hpaMaxPods * (queueEnabled ? 82 : 52))) * 100)
+    );
+    const saturated = cpuPerPod >= 88;
 
-  const handleStageSelect = (idx) => {
-    setArkStage(idx);
-    if (trackRef.current && window.innerWidth >= 1024) {
-      const el = trackRef.current;
-      const rect = el.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const targetY = scrollTop + rect.top + (idx * (rect.height / 3.05));
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    return {
+      pods: hpaMaxPods,
+      cpuPerPod,
+      saturated,
+      rps,
+      errorRate,
+      mediaRate,
+      p95Ms
+    };
+  }, [vus, hpaEnabled, queueEnabled]);
+
+  const applyPreset = (preset) => {
+    setAutoPlay(false);
+    sfx.playSwitch(true);
+    if (preset === 'baseline') {
+      setVus(350);
+      setHpaEnabled(false);
+      setQueueEnabled(false);
+    } else if (preset === 'optimized') {
+      setVus(350);
+      setHpaEnabled(true);
+      setQueueEnabled(true);
+    } else {
+      setVus(480);
+      setHpaEnabled(true);
+      setQueueEnabled(true);
     }
   };
 
-  const springTransition = {
-    type: "spring",
-    stiffness: 380,
-    damping: 24,
-    mass: 0.8
+  const handleCopyLua = () => {
+    navigator.clipboard.writeText(arknet?.codeSnippet || '');
+    sfx.playSuccess();
+    setCopiedLua(true);
+    setTimeout(() => setCopiedLua(false), 2000);
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Container: Desktop uses tall track for smooth scrollytelling; Mobile uses clean natural height */}
-      <div 
-        id="telemetry"
-        ref={trackRef} 
-        className="relative lg:h-[240vh] scroll-mt-20"
-      >
-        {/* Sticky viewport pinned on desktop, natural flow on mobile */}
-        <div className="lg:sticky lg:top-20 z-20">
-          <div className="neo-card p-4 sm:p-6 bg-white shadow-neo-2xl border-2 border-[#121316] space-y-4">
-            
-            {/* Titlebar with Repo Link & Specs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-[#121316]">
-              <div className="flex items-center gap-3">
-                <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-yellow shadow-neo-sm flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#121316]" />
-                </span>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-[#121316] tracking-tight">
-                      ArkNet: High-Concurrency Stress Benchmark (350 VUs)
-                    </h3>
-                    <span className="px-2 py-0.5 rounded border border-[#121316] bg-neo-green font-mono text-[10px] font-black">
-                      BENCHMARKED
-                    </span>
-                  </div>
-                  <p className="text-xs font-mono text-slate-600 font-bold">
-                    Node.js (Express 5) • Redis Lua • 9 BullMQ Queues • Kubernetes HPA
-                  </p>
+    <SpotlightBentoCard className="p-3.5 sm:p-4" accentGlow>
+      <div className="space-y-3">
+        {/* Header Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 pb-2.5 border-b border-[var(--border-hairline)]">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[var(--signal)] text-white">
+                LAB 01 // DISTRIBUTED SIMULATOR
+              </span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                Express 5 · Redis Lua · 9 BullMQ Queues · K8s HPA
+              </span>
+            </div>
+            <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight">
+              {arknet?.title}
+            </h3>
+            <p className="text-xs text-[var(--text-muted)] max-w-2xl">
+              Calibrated to real 350-VU load tests (158K+ requests served). Drag concurrent load or toggle autoscaling to inspect pod saturation.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                sfx.playTick(720);
+                setAutoPlay((a) => !a);
+              }}
+              className={`px-2 py-1.5 rounded-lg text-[10px] font-mono font-bold inline-flex items-center gap-1 ${
+                autoPlay ? 'tactile-chip-active' : 'tactile-chip text-[var(--text-muted)]'
+              }`}
+              title="Toggle automatic live simulation tour"
+            >
+              {autoPlay ? <Pause className="w-3 h-3 text-[var(--signal)]" /> : <Play className="w-3 h-3 text-emerald-500" />}
+              <span>{autoPlay ? 'AUTO DEMO' : 'PAUSED'}</span>
+            </button>
+            <button
+              onClick={() => applyPreset('baseline')}
+              className={`px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-semibold ${
+                !hpaEnabled && !queueEnabled && vus === 350
+                  ? 'bg-rose-600 text-white border border-rose-600 shadow-sm'
+                  : 'tactile-chip'
+              }`}
+            >
+              Simulate Baseline (2 Pods)
+            </button>
+            <button
+              onClick={() => applyPreset('optimized')}
+              className={`px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-semibold ${
+                hpaEnabled && queueEnabled && vus === 350
+                  ? 'bg-emerald-600 text-white border border-emerald-600 shadow-sm'
+                  : 'tactile-chip'
+              }`}
+            >
+              Simulate Benchmark (350 VUs)
+            </button>
+            {arknet?.repo && (
+              <a
+                href={arknet.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="swiss-btn-secondary py-1.5 px-3"
+              >
+                <GithubIcon className="w-3.5 h-3.5" />
+                <span>Repo</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Control Console + Live Telemetry */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          {/* Controls Panel */}
+          <div className="lg:col-span-5 bento-well p-3.5 sm:p-4 flex flex-col justify-between space-y-3.5">
+            <div className="space-y-4">
+              {/* VU Slider */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="font-bold text-[var(--text-primary)]">CONCURRENT USERS (VUs)</span>
+                  <span className="px-2 py-0.5 rounded bg-[var(--text-primary)] text-[var(--bg-canvas)] font-bold tabular-nums">
+                    {vus} VUs
+                  </span>
+                </div>
+                <input
+                  id={sliderId}
+                  name="arknetVus"
+                  type="range"
+                  min={50}
+                  max={500}
+                  step={10}
+                  value={vus}
+                  onChange={(e) => {
+                    setAutoPlay(false);
+                    setVus(Number(e.target.value));
+                  }}
+                  aria-label="Concurrent virtual users"
+                  className="w-full accent-[var(--signal)] cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                  <span>50 idle</span>
+                  <span className="font-bold text-[var(--text-primary)]">350 benchmark</span>
+                  <span>500 spike</span>
                 </div>
               </div>
 
-              {arknet?.repo && (
-                <a
-                  href={arknet.repo}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="neo-btn-secondary text-xs py-1.5 px-3 self-start sm:self-auto"
+              {/* Hardware Toggle Switches */}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAutoPlay(false);
+                    const next = !hpaEnabled;
+                    setHpaEnabled(next);
+                    sfx.playSwitch(next);
+                  }}
+                  className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between gap-2 tactile-chip ${
+                    !hpaEnabled ? 'opacity-85' : ''
+                  }`}
                 >
-                  <GithubIcon className="w-4 h-4" />
-                  <span>SOURCE CODE</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
+                  <div>
+                    <div className="text-xs font-mono font-bold">KUBERNETES HPA (2 → 10 PODS)</div>
+                    <div className="text-[11px] text-[var(--text-muted)]">
+                      Click to toggle CPU-based replica scaling
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span
+                      className={`text-[10px] font-mono font-bold ${
+                        hpaEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
+                      }`}
+                    >
+                      {hpaEnabled ? 'ON' : 'OFF'}
+                    </span>
+                    <span
+                      className={`w-8 h-4.5 p-0.5 rounded-full transition-colors flex items-center ${
+                        hpaEnabled ? 'bg-emerald-500 justify-end' : 'bg-zinc-400 dark:bg-zinc-600 justify-start'
+                      }`}
+                    >
+                      <span className="w-3.5 h-3.5 rounded-full bg-white shadow-sm block" />
+                    </span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAutoPlay(false);
+                    const next = !queueEnabled;
+                    setQueueEnabled(next);
+                    sfx.playSwitch(next);
+                  }}
+                  className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between gap-2 tactile-chip ${
+                    !queueEnabled ? 'opacity-85' : ''
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-mono font-bold">9 BULLMQ QUEUES + REDIS LUA</div>
+                    <div className="text-[11px] text-[var(--text-muted)]">
+                      Click to toggle async fanout &amp; ranking workers
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span
+                      className={`text-[10px] font-mono font-bold ${
+                        queueEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
+                      }`}
+                    >
+                      {queueEnabled ? 'ON' : 'OFF'}
+                    </span>
+                    <span
+                      className={`w-8 h-4.5 p-0.5 rounded-full transition-colors flex items-center ${
+                        queueEnabled ? 'bg-emerald-500 justify-end' : 'bg-zinc-400 dark:bg-zinc-600 justify-start'
+                      }`}
+                    >
+                      <span className="w-3.5 h-3.5 rounded-full bg-white shadow-sm block" />
+                    </span>
+                  </div>
+                </button>
+              </div>
             </div>
 
-            {/* Stepper Stage Tabs */}
-            <div className="space-y-1.5">
-              <div className="grid grid-cols-3 gap-2">
-                {stages.map((st, idx) => {
-                  const isActive = arkStage === idx;
+            {/* Live Simulated KPI Readout */}
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--border-hairline)] font-mono">
+              <div className="p-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                <div className="text-[9px] text-[var(--text-muted)]">THROUGHPUT</div>
+                <div className="text-base font-bold tabular-nums">{sim.rps} RPS</div>
+                <div className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                  vs 36.0 baseline
+                </div>
+              </div>
+              <div className="p-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                <div className="text-[9px] text-[var(--text-muted)]">ERROR RATE</div>
+                <div
+                  className={`text-base font-bold tabular-nums ${
+                    sim.errorRate > 5 ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-400'
+                  }`}
+                >
+                  {sim.errorRate}%
+                </div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  p95: {sim.p95Ms}ms
+                </div>
+              </div>
+              <div className="p-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                <div className="text-[9px] text-[var(--text-muted)]">MEDIA PIPELINE</div>
+                <div className="text-base font-bold tabular-nums">{sim.mediaRate}%</div>
+                <div className="text-[10px] text-[var(--text-muted)]">Async BullMQ</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                <div className="text-[9px] text-[var(--text-muted)]">CLUSTER STATE</div>
+                <div className="text-base font-bold tabular-nums">{sim.pods} Pods</div>
+                <div
+                  className={`text-[10px] ${
+                    sim.saturated ? 'text-rose-500 font-bold' : 'text-emerald-600 dark:text-emerald-400'
+                  }`}
+                >
+                  {sim.cpuPerPod}% CPU avg
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Live Topology Visualizer + Redis Lua */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-3">
+            {/* Animated Cluster Canvas */}
+            <div className="bento-well p-3 sm:p-3.5 space-y-2.5">
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <span className="flex items-center gap-1.5 font-bold">
+                  <Activity className="w-3.5 h-3.5 text-[var(--signal)]" />
+                  <span>LIVE CLUSTER TOPOLOGY ({sim.pods} REPLICAS)</span>
+                </span>
+                <span
+                  className={`px-2 py-0.5 rounded font-bold text-[10px] ${
+                    sim.saturated
+                      ? 'bg-rose-500/15 text-rose-500'
+                      : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                  }`}
+                >
+                  {sim.saturated ? 'SATURATION WARNING' : 'NOMINAL HEALTH'}
+                </span>
+              </div>
+
+              {/* Dynamic SVG Animated Traffic Conduit */}
+              <div className="w-full overflow-hidden">
+                <svg viewBox="0 0 600 44" className="w-full h-9">
+                  <line
+                    x1="20"
+                    y1="22"
+                    x2="580"
+                    y2="22"
+                    stroke="var(--border-strong)"
+                    strokeWidth="1.5"
+                    strokeDasharray="5 5"
+                  />
+                  {[0, 1, 2, 3, 4].map((p) => (
+                    <motion.circle
+                      key={p}
+                      r={sim.saturated ? 4.5 : 3.5}
+                      cy={22}
+                      fill={sim.saturated && p % 2 === 1 ? '#E11D48' : 'var(--signal)'}
+                      initial={{ cx: 20, opacity: 0.9 }}
+                      animate={{ cx: 580, opacity: [0.2, 1, 0.2] }}
+                      transition={{
+                        duration: Math.max(0.75, 2.4 - vus / 300),
+                        repeat: Infinity,
+                        delay: p * 0.32,
+                        ease: 'linear'
+                      }}
+                    />
+                  ))}
+                  <rect x="8" y="10" width="78" height="24" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" />
+                  <text x="47" y="25" textAnchor="middle" fontSize="9" fontFamily="JetBrains Mono" fill="var(--text-primary)">
+                    NGINX ({vus})
+                  </text>
+                  <rect x="502" y="10" width="90" height="24" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" />
+                  <text x="547" y="25" textAnchor="middle" fontSize="9" fontFamily="JetBrains Mono" fill="var(--text-primary)">
+                    {queueEnabled ? 'BULLMQ (9)' : 'SYNC LOOP'}
+                  </text>
+                </svg>
+              </div>
+
+              {/* Animated Pod Grid (2 to 10 Replicas) */}
+              <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1.5 font-mono">
+                <AnimatePresence>
+                  {Array.from({ length: sim.pods }).map((_, idx) => (
+                    <motion.div
+                      key={`pod-${idx}`}
+                      layout
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ type: 'spring', stiffness: 420, damping: 24, delay: idx * 0.02 }}
+                      className={`p-1.5 rounded-lg border text-[10px] transition-colors ${
+                        sim.saturated
+                          ? 'bg-rose-500/10 border-rose-500/50 text-rose-500'
+                          : 'bg-[var(--bg-surface)] border-[var(--border-hairline)]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between font-bold">
+                        <span className="flex items-center gap-1">
+                          <Server className="w-2.5 h-2.5" />
+                          <span>pod-{idx + 1}</span>
+                        </span>
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            sim.saturated ? 'bg-rose-500 animate-ping' : 'bg-emerald-500'
+                          }`}
+                        />
+                      </div>
+                      <div className="mt-1.5 w-full h-1 rounded-full bg-[var(--bg-well)] overflow-hidden">
+                        <motion.div
+                          animate={{ width: `${sim.cpuPerPod}%` }}
+                          transition={{ duration: 0.35 }}
+                          className={`h-full ${
+                            sim.saturated ? 'bg-rose-500' : 'bg-emerald-500'
+                          }`}
+                        />
+                      </div>
+                      <div className="mt-1 text-[9px] text-[var(--text-muted)] tabular-nums">
+                        CPU {sim.cpuPerPod}%
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Interactive 6-Layer Architecture Selector + Atomic Redis Lua */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <span className="flex items-center gap-1.5 font-bold">
+                  <Layers className="w-3.5 h-3.5 text-[var(--signal)]" />
+                  <span>6-LAYER ARCHITECTURE TRACE</span>
+                </span>
+                <span className="text-[10px] font-bold text-[var(--signal)]">Tap any layer ↓</span>
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                {arknet?.architecture?.map((node, idx) => {
+                  const selected = activeStep === idx;
                   return (
                     <button
                       key={idx}
-                      onClick={() => handleStageSelect(idx)}
-                      className={`p-2 rounded-xl border-2 border-[#121316] text-left transition-all ${
-                        isActive
-                          ? 'bg-[#121316] text-white shadow-neo scale-[1.01]'
-                          : 'bg-[#FFFDF7] text-slate-800 hover:bg-slate-100 shadow-neo-sm'
+                      onClick={() => {
+                        setAutoPlay(false);
+                        sfx.playTick(700);
+                        setActiveStep(idx);
+                      }}
+                      className={`relative p-1.5 rounded-xl text-left ${
+                        selected ? 'tactile-chip-active' : 'tactile-chip'
                       }`}
                     >
-                      <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-black">
-                        <span className={isActive ? 'text-neo-yellow' : 'text-slate-500'}>
-                          {st.badge}
-                        </span>
-                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-neo-yellow animate-ping' : 'bg-transparent'}`} />
-                      </div>
-                      <span className="text-xs font-black block truncate mt-0.5">
-                        {st.title}
+                      <span className="text-[9px] font-mono opacity-60 block">0{idx + 1}</span>
+                      <span className="text-[10px] font-mono font-bold block leading-tight">
+                        {node.step}
                       </span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* Live Desktop Scroll Progress Bar */}
-              <div className="hidden lg:block w-full h-1 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
-                <motion.div 
-                  className="h-full bg-neo-yellow"
-                  style={{ scaleX: scrollYProgress, transformOrigin: "0%" }}
-                />
-              </div>
+              {arknet?.architecture?.[activeStep] && (
+                <div className="px-3 py-2 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-well)]/70 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 text-xs">
+                  <span className="font-mono font-bold text-[var(--signal)] shrink-0">
+                    [{arknet.architecture[activeStep].step}]
+                  </span>
+                  <span className="text-[var(--text-primary)] leading-snug">
+                    {arknet.architecture[activeStep].desc}
+                  </span>
+                </div>
+              )}
 
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 px-0.5">
-                <span className="flex items-center gap-1.5 text-[#121316]">
-                  <Activity className="w-3.5 h-3.5 text-neo-pink" />
-                  <span>BENCHMARK TIMELINE: STAGE 0{arkStage + 1} / 03</span>
-                </span>
-                <span>{stages[arkStage].statusLabel}</span>
-              </div>
-            </div>
-
-            {/* Compact 2-Column Split Layout: Height stays under 440px on desktop */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-              
-              {/* LEFT COLUMN (lg:col-span-5): Operational Incident Analysis */}
-              <div className="lg:col-span-5 flex flex-col justify-between">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`incident-${arkStage}`}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={springTransition}
-                    className={`h-full p-3.5 rounded-xl border-2 border-[#121316] shadow-neo-sm flex flex-col justify-between space-y-3 ${
-                      arkStage === 0 
-                        ? 'bg-rose-50 border-rose-900' 
-                        : arkStage === 1 
-                        ? 'bg-emerald-50 border-emerald-900' 
-                        : 'bg-amber-50 border-amber-900'
-                    }`}
+              {/* Copyable Atomic Redis Lua Box */}
+              <div className="rounded-xl border border-[var(--border-strong)] bg-[#0D0D10] text-zinc-100 p-2.5 font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-zinc-400 pb-1.5 mb-1.5 border-b border-zinc-800">
+                  <span className="flex items-center gap-1.5 text-zinc-200 font-semibold">
+                    <Terminal className="w-3 h-3 text-[var(--signal)] shrink-0" />
+                    <span>REDIS ATOMIC LUA (TIME-DECAY RANKING · &lt;1ms)</span>
+                  </span>
+                  <button
+                    onClick={handleCopyLua}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors shrink-0"
                   >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between gap-2 border-b border-[#121316]/20 pb-1.5">
-                        <span className="text-[9px] font-mono font-black text-slate-600 uppercase">
-                          OPERATIONAL INCIDENT ANALYSIS
-                        </span>
-                        <span className={`px-2 py-0.5 rounded border border-[#121316] font-mono text-[9px] font-black shadow-neo-xs ${stages[arkStage].statusColor}`}>
-                          {stages[arkStage].badge}
-                        </span>
-                      </div>
-                      <h4 className="text-xs sm:text-sm font-black text-[#121316]">
-                        {stages[arkStage].incidentTitle}
-                      </h4>
-                    </div>
-
-                    <div className="space-y-2 text-xs">
-                      <div className="p-2.5 rounded-lg bg-white border border-[#121316]">
-                        <span className="font-mono text-[9px] font-black text-slate-500 block uppercase">
-                          ROOT CAUSE / BOTTLENECK
-                        </span>
-                        <p className="text-slate-800 font-medium text-[11px] mt-0.5 leading-relaxed">
-                          {stages[arkStage].problem}
-                        </p>
-                      </div>
-
-                      <div className="p-2.5 rounded-lg bg-white border border-[#121316]">
-                        <span className="font-mono text-[9px] font-black text-slate-500 block uppercase">
-                          RESOLUTION &amp; BENCHMARK IMPACT
-                        </span>
-                        <p className="text-slate-900 font-bold text-[11px] mt-0.5 leading-relaxed">
-                          {stages[arkStage].resolution}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="pt-1 text-[10px] font-mono text-slate-500 flex items-center justify-between">
-                      <span>Target: Express 5 + K8s Metrics</span>
-                      <span className="font-bold text-[#121316]">ArkNet Benchmark Suite</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+                    {copiedLua ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-400" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <pre className="text-[10px] text-emerald-400 overflow-x-auto max-h-[64px] overflow-y-auto leading-snug">
+                  {arknet?.codeSnippet}
+                </pre>
               </div>
-
-              {/* RIGHT COLUMN (lg:col-span-7): Live Visual Canvas (Pods / Workers / Gauges) */}
-              <div className="lg:col-span-7 flex flex-col justify-between">
-                <AnimatePresence mode="wait">
-                  
-                  {/* STAGE 0: FIXED 2 PODS OVERLOADED */}
-                  {arkStage === 0 && (
-                    <motion.div
-                      key="stage-0-visual"
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={springTransition}
-                      className="space-y-3"
-                    >
-                      {/* Pod Visualizer */}
-                      <div className="p-3 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] space-y-2">
-                        <div className="flex items-center justify-between text-xs font-mono font-bold">
-                          <span className="text-rose-700 flex items-center gap-1.5 font-black text-[11px]">
-                            <AlertCircle className="w-3.5 h-3.5 text-rose-600 animate-pulse" />
-                            <span>2 STATIC REPLICAS (100% CPU SATURATION)</span>
-                          </span>
-                          <span className="px-1.5 py-0.5 rounded border border-rose-600 bg-rose-100 text-rose-800 font-bold text-[9px]">
-                            HPA: DISABLED
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2 font-mono">
-                          <motion.div 
-                            animate={{ scale: [1, 1.015, 1] }} 
-                            transition={{ repeat: Infinity, duration: 1.2 }}
-                            className="p-2 rounded-lg border border-rose-600 bg-rose-100 shadow-neo-xs space-y-1"
-                          >
-                            <div className="flex justify-between items-center font-black text-rose-900 text-[11px]">
-                              <span>pod-api-1</span>
-                              <span className="px-1.5 py-0.2 rounded bg-rose-600 text-white text-[9px]">CPU: 100%</span>
-                            </div>
-                            <div className="w-full h-1.5 rounded-full bg-rose-200 overflow-hidden">
-                              <div className="w-full h-full bg-rose-600" />
-                            </div>
-                            <span className="text-[9px] text-rose-700 block font-bold truncate">Queue overflow (Dropped)</span>
-                          </motion.div>
-
-                          <motion.div 
-                            animate={{ scale: [1, 1.015, 1] }} 
-                            transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }}
-                            className="p-2 rounded-lg border border-rose-600 bg-rose-100 shadow-neo-xs space-y-1"
-                          >
-                            <div className="flex justify-between items-center font-black text-rose-900 text-[11px]">
-                              <span>pod-api-2</span>
-                              <span className="px-1.5 py-0.2 rounded bg-rose-600 text-white text-[9px]">RAM: 512MB MAX</span>
-                            </div>
-                            <div className="w-full h-1.5 rounded-full bg-rose-200 overflow-hidden">
-                              <div className="w-full h-full bg-rose-600" />
-                            </div>
-                            <span className="text-[9px] text-rose-700 block font-bold truncate">Latency 3s - 12s</span>
-                          </motion.div>
-                        </div>
-                      </div>
-
-                      {/* 3 Metric Gauges */}
-                      <div className="grid grid-cols-3 gap-2 font-mono">
-                        <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>THROUGHPUT</span>
-                          </div>
-                          <div className="text-xl font-black text-[#121316]">36.0 RPS</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <div className="w-[36%] h-full bg-slate-400" />
-                          </div>
-                          <span className="text-[9px] text-rose-700 font-bold block truncate">CPU Saturated</span>
-                        </div>
-
-                        <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>ERROR RATE</span>
-                            <span className="text-rose-600 font-black text-[9px]">CRITICAL</span>
-                          </div>
-                          <div className="text-xl font-black text-rose-600">28.4%</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <div className="w-[84%] h-full bg-rose-500" />
-                          </div>
-                          <span className="text-[9px] text-rose-700 font-bold block truncate">Dropped 1/3 requests</span>
-                        </div>
-
-                        <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>MEDIA JOBS</span>
-                          </div>
-                          <div className="text-xl font-black text-amber-600">34.5%</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <div className="w-[35%] h-full bg-amber-400" />
-                          </div>
-                          <span className="text-[9px] text-slate-600 font-bold block truncate">Queue backlog</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* STAGE 1: KUBERNETES AUTOSCALED (10 PODS) */}
-                  {arkStage === 1 && (
-                    <motion.div
-                      key="stage-1-visual"
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={springTransition}
-                      className="space-y-3"
-                    >
-                      {/* 10 Pods Compact Grid (5x2) */}
-                      <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-green/10 space-y-1.5">
-                        <div className="flex items-center justify-between text-xs font-mono font-bold">
-                          <span className="text-emerald-900 flex items-center gap-1.5 font-black text-[11px]">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>K8S HPA AUTOSCALED (10 REPLICAS)</span>
-                          </span>
-                          <span className="px-1.5 py-0.5 rounded border border-[#121316] bg-neo-green text-[9px] font-black">
-                            10 REPLICAS ACTIVE
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-5 gap-1.5 font-mono text-[9px]">
-                          {Array.from({ length: 10 }).map((_, i) => (
-                            <motion.div
-                              key={i}
-                              initial={{ scale: 0, y: 10 }}
-                              animate={{ scale: 1, y: 0 }}
-                              transition={{ 
-                                type: "spring", 
-                                stiffness: 450, 
-                                damping: 18, 
-                                delay: i * 0.03 
-                              }}
-                              className="p-1.5 rounded-lg border border-[#121316] bg-white text-center shadow-neo-xs"
-                            >
-                              <div className="font-bold text-[#121316] flex items-center justify-between">
-                                <span>p-{i + 1}</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-neo-green" />
-                              </div>
-                              <span className="text-[8px] text-emerald-700 font-bold block mt-0.5">42% CPU</span>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 3 Metric Gauges (Optimized) */}
-                      <div className="grid grid-cols-3 gap-2 font-mono">
-                        <motion.div 
-                          initial={{ scale: 0.9 }}
-                          animate={{ scale: 1 }}
-                          className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1"
-                        >
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>THROUGHPUT</span>
-                            <span className="text-emerald-700 font-black text-[9px]">+242%</span>
-                          </div>
-                          <div className="text-xl font-black text-[#121316]">87.2 RPS</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <motion.div 
-                              initial={{ width: '36%' }}
-                              animate={{ width: '88%' }}
-                              transition={{ duration: 0.6 }}
-                              className="h-full bg-neo-green" 
-                            />
-                          </div>
-                          <span className="text-[9px] text-emerald-700 font-bold block truncate">158K+ requests served</span>
-                        </motion.div>
-
-                        <motion.div 
-                          initial={{ scale: 0.9 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.05 }}
-                          className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1"
-                        >
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>ERROR RATE</span>
-                            <span className="bg-neo-green px-1 rounded text-[8px] font-black">MINIMAL</span>
-                          </div>
-                          <div className="text-xl font-black text-emerald-600">0.8%</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <motion.div 
-                              initial={{ width: '84%' }}
-                              animate={{ width: '8%' }}
-                              transition={{ duration: 0.6 }}
-                              className="h-full bg-emerald-500" 
-                            />
-                          </div>
-                          <span className="text-[9px] text-emerald-700 font-bold block truncate">35x error reduction</span>
-                        </motion.div>
-
-                        <motion.div 
-                          initial={{ scale: 0.9 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.1 }}
-                          className="p-2.5 rounded-xl border-2 border-[#121316] bg-white shadow-neo-sm space-y-1"
-                        >
-                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
-                            <span>MEDIA JOBS</span>
-                            <span className="text-neo-cyan font-black text-[9px]">STABLE</span>
-                          </div>
-                          <div className="text-xl font-black text-[#121316]">86.2%</div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 border border-[#121316] overflow-hidden">
-                            <motion.div 
-                              initial={{ width: '35%' }}
-                              animate={{ width: '86%' }}
-                              transition={{ duration: 0.6 }}
-                              className="h-full bg-neo-cyan" 
-                            />
-                          </div>
-                          <span className="text-[9px] text-slate-700 font-bold block truncate">Realtime processing</span>
-                        </motion.div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* STAGE 2: DECOUPLED ARCHITECTURE (BULLMQ + REDIS LUA) */}
-                  {arkStage === 2 && (
-                    <motion.div
-                      key="stage-2-visual"
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={springTransition}
-                      className="space-y-3"
-                    >
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between text-xs font-mono font-bold">
-                          <span className="text-[#121316] flex items-center gap-1.5 text-[11px]">
-                            <Layers className="w-3.5 h-3.5 text-neo-pink" />
-                            <span>9 DECOUPLED WORKER QUEUES (SELECT STEP)</span>
-                          </span>
-                          <span className="text-slate-500 text-[10px] hidden sm:inline">Non-blocking Event Loop</span>
-                        </div>
-
-                        {arknet?.architecture && (
-                          <>
-                            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-                              {arknet.architecture.map((item, idx) => (
-                                <button
-                                  key={idx}
-                                  onClick={() => setActiveStep(idx)}
-                                  className={`p-1.5 rounded-lg border border-[#121316] text-left transition-all ${
-                                    activeStep === idx
-                                      ? 'bg-neo-yellow shadow-neo-xs font-bold scale-[1.02]'
-                                      : 'bg-[#FFFDF7] hover:bg-slate-100 shadow-neo-xs'
-                                  }`}
-                                >
-                                  <span className="text-[8px] font-mono font-bold block text-slate-500">
-                                    0{idx + 1}
-                                  </span>
-                                  <span className="text-[10px] font-black text-[#121316] truncate block">
-                                    {item.step}
-                                  </span>
-                                </button>
-                              ))}
-                            </div>
-
-                            <div className="p-2 rounded-lg border border-[#121316] bg-neo-cyan/20 flex items-center justify-between gap-2 shadow-neo-xs">
-                              <div className="flex items-center gap-2 truncate">
-                                <span className="px-1.5 py-0.5 rounded bg-neo-cyan border border-[#121316] font-mono text-[9px] font-black">
-                                  {arknet.architecture[activeStep].step}
-                                </span>
-                                <span className="text-[11px] font-bold text-[#121316] truncate">
-                                  {arknet.architecture[activeStep].desc}
-                                </span>
-                              </div>
-                              <span className="text-[9px] font-mono font-bold text-slate-600 flex-shrink-0">
-                                ASYNC WORKER
-                              </span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Redis Lua Snippet Box */}
-                      <div className="p-2.5 rounded-xl border-2 border-[#121316] bg-[#121316] text-white font-mono shadow-neo-sm space-y-1">
-                        <div className="flex justify-between items-center text-[9px] text-slate-400 pb-1 border-b border-slate-800">
-                          <span className="flex items-center gap-1.5 text-slate-300 font-bold">
-                            <Terminal className="w-3 h-3 text-neo-yellow" />
-                            <span>ATOMIC REDIS LUA (TIME-DECAY TRENDING SCORE)</span>
-                          </span>
-                          <span className="text-neo-green font-bold">&lt;1ms EXECUTION</span>
-                        </div>
-                        <pre className="text-emerald-400 text-[10px] overflow-x-auto leading-relaxed pt-0.5">
-{`local score = redis.call('ZSCORE', KEYS[1], ARGV[1]) or 0
-local new_score = (tonumber(score) * math.exp(-0.05 * tonumber(ARGV[2]))) + tonumber(ARGV[3])
-redis.call('ZADD', KEYS[1], new_score, ARGV[1])
-return new_score`}
-                        </pre>
-                      </div>
-                    </motion.div>
-                  )}
-
-                </AnimatePresence>
-              </div>
-
             </div>
-
           </div>
         </div>
       </div>
-
-    </div>
+    </SpotlightBentoCard>
   );
 }

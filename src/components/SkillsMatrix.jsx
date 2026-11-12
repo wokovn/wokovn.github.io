@@ -1,134 +1,174 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Sparkles, CheckCircle2, FolderGit2 } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, FolderGit2, Search } from 'lucide-react';
 import { skillsData } from '../data/portfolioData';
+import { ScrambleText, SpotlightBentoCard } from './MotionPrimitives';
+import { sfx } from '../utils/sfx';
 
 export default function SkillsMatrix() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [query, setQuery] = useState('');
 
   const categories = [
-    { id: 'all', label: 'All Technologies' },
-    { id: 'backend', label: 'Backend & Distributed' },
-    { id: 'database', label: 'Database & Security' },
-    { id: 'ai', label: 'AI & Multi-Agent' },
+    { id: 'all', label: 'All' },
     { id: 'frontend', label: 'Frontend & UI' },
-    { id: 'devops', label: 'DevOps & Testing' },
+    { id: 'backend', label: 'Backend' },
+    { id: 'ai', label: 'AI & Agents' },
+    { id: 'database', label: 'Databases & Sec' },
+    { id: 'devops', label: 'Cloud & QA' }
   ];
 
-  const filteredCategories = activeCategory === 'all'
-    ? skillsData.categories
-    : skillsData.categories.filter(c => c.id === activeCategory);
-
-  const getCategoryColor = (id) => {
-    switch (id) {
-      case 'backend': return 'bg-neo-yellow';
-      case 'database': return 'bg-neo-cyan';
-      case 'ai': return 'bg-neo-pink text-white';
-      case 'frontend': return 'bg-neo-purple/40';
-      case 'devops': return 'bg-neo-green';
-      default: return 'bg-neo-yellow';
-    }
-  };
+  const filteredCategories = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return skillsData.categories
+      .filter((c) => activeCategory === 'all' || c.id === activeCategory)
+      .map((c) => ({
+        ...c,
+        skills: q
+          ? c.skills.filter(
+              (s) =>
+                s.name.toLowerCase().includes(q) ||
+                s.desc.toLowerCase().includes(q) ||
+                s.project.toLowerCase().includes(q) ||
+                s.tag.toLowerCase().includes(q)
+            )
+          : c.skills
+      }))
+      .filter((c) => c.skills.length > 0);
+  }, [activeCategory, query]);
 
   return (
-    <section id="skills" className="py-20 relative z-10 border-t-2 border-[#121316] scroll-mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        
-        {/* Section Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+    <section
+      id="skills"
+      className="py-16 sm:py-20 relative z-10 border-t border-[var(--border-hairline)] scroll-mt-16"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        {/* Header + Controls */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-2 border-[#121316]"
+          className="space-y-6 pb-6 border-b border-[var(--border-hairline)]"
         >
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border-2 border-[#121316] bg-neo-yellow text-xs font-mono font-bold shadow-neo-sm uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-[#121316]" />
-              <span>// 03. TECHNICAL ARSENAL</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-2">
+              <div className="text-[11px] font-mono font-bold text-[var(--signal)] tracking-wider uppercase">
+                <ScrambleText text="SECTION 03 // TECHNICAL ARSENAL" />
+              </div>
+              <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.03em]">
+                Core Capabilities.
+              </h2>
+              <p className="text-sm text-[var(--text-muted)] max-w-2xl">
+                Every capability mapped directly to shipped systems at ISB Vietnam and high-concurrency architectures.
+              </p>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-[#121316] tracking-tight">
-              CORE ENGINEERING CAPABILITIES
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 max-w-2xl font-medium">
-              Technologies directly validated in high-concurrency projects and production systems at ISB Vietnam.
-            </p>
+
+            {/* Instant Search Filter */}
+            <div className="relative w-full md:w-64">
+              <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                id="skills-filter-input"
+                name="skillsFilter"
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Filter stack (e.g. Redis, k6)..."
+                aria-label="Filter technical capabilities"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-xs font-mono outline-none focus:border-[var(--signal)] transition-colors"
+              />
+            </div>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-2">
-            {categories.map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-xl border-2 border-[#121316] text-xs font-mono font-bold shadow-neo-sm transition-all ${
-                  activeCategory === cat.id
-                    ? 'bg-[#121316] text-white -translate-y-0.5 shadow-neo'
-                    : 'bg-white text-[#121316] hover:bg-slate-100'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          {/* Animated layoutId Filter Pills */}
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((cat) => {
+              const active = activeCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    sfx.playTick(720);
+                    setActiveCategory(cat.id);
+                  }}
+                  className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold transition-colors z-10 border ${
+                    active
+                      ? 'text-[var(--bg-canvas)] border-transparent'
+                      : 'text-[var(--text-muted)] border-[var(--border-hairline)] bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="skillCategoryPill"
+                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                      className="absolute inset-0 rounded-xl bg-[var(--text-primary)] -z-10"
+                    />
+                  )}
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
         </motion.div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCategories.map((cat, idx) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.45, delay: (idx % 3) * 0.1 }}
-              className="neo-card p-6 bg-white shadow-neo-lg space-y-4 hover:-translate-y-1 transition-transform"
-            >
-              <div className="flex items-center justify-between pb-3 border-b-2 border-[#121316]">
-                <h3 className="font-black text-[#121316] text-lg">
-                  {cat.name}
-                </h3>
-                <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded border border-[#121316] ${getCategoryColor(cat.id)}`}>
-                  {cat.skills.length} TECHS
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                {cat.skills.map((skill, sIdx) => (
-                  <div key={sIdx} className="p-3.5 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm space-y-2">
-                    
-                    {/* Header: Skill Name & Verified Project Pill */}
-                    <div className="flex flex-wrap items-center justify-between gap-1.5">
-                      <span className="text-xs sm:text-sm font-black text-[#121316]">
-                        {skill.name}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-md border border-[#121316] bg-neo-yellow/40 font-bold text-[#121316]">
-                        <FolderGit2 className="w-3 h-3 text-[#121316]" />
-                        <span>{skill.project}</span>
-                      </span>
-                    </div>
-
-                    {/* Practical Work Description */}
-                    <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                      {skill.desc}
-                    </p>
-
-                    {/* Role / Practical Tag */}
-                    <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-slate-500 font-bold">
-                      <span className="text-emerald-700 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                        <span>{skill.tag}</span>
-                      </span>
-                    </div>
-
+        {/* Bento Grid with AnimatePresence */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence mode="popLayout">
+            {filteredCategories.map((cat) => (
+              <motion.div
+                key={cat.id}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.25 }}
+              >
+                <SpotlightBentoCard className="p-5 sm:p-6 h-full space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[var(--border-hairline)]">
+                    <h3 className="font-display font-bold text-lg tracking-tight">
+                      {cat.name}
+                    </h3>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[var(--bg-well)] border border-[var(--border-hairline)]">
+                      {cat.skills.length}
+                    </span>
                   </div>
-                ))}
-              </div>
 
-            </motion.div>
-          ))}
-        </div>
+                  <div className="space-y-3">
+                    {cat.skills.map((skill) => (
+                      <div
+                        key={skill.name}
+                        className="bento-well p-3.5 space-y-2 hover:border-[var(--border-strong)] transition-colors"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-1.5">
+                          <span className="text-xs sm:text-sm font-bold">{skill.name}</span>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                            <FolderGit2 className="w-3 h-3 text-[var(--signal)]" />
+                            <span>{skill.project}</span>
+                          </span>
+                        </div>
 
+                        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                          {skill.desc}
+                        </p>
+
+                        <div className="pt-0.5 flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>{skill.tag}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </SpotlightBentoCard>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {filteredCategories.length === 0 && (
+          <div className="bento-well p-8 text-center font-mono text-xs text-[var(--text-muted)]">
+            No capabilities matched &ldquo;{query}&rdquo;. Clear search to view all modules.
+          </div>
+        )}
       </div>
     </section>
   );

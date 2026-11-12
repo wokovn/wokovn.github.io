@@ -1,183 +1,225 @@
 export const personalInfo = {
   name: "Nguyễn Anh Khoa",
   handle: "wokovn",
-  targetTitle: "Software Engineer",
-  subTitle: "Distributed Backend Services, Full-Stack & Multi-Agent AI Systems",
-  phone: "0855811187",
+  targetTitle: "Full-Stack Software Engineer",
+  roles: [
+    "FULL-STACK WEB ENGINEER",
+    "AI WORKFLOW & BACKEND",
+    "DESIGN-FOCUSED FRONTEND"
+  ],
+  subTitle: "Building fast, reliable web apps and practical AI tools",
   email: "anhkhoa.nguyen4405@gmail.com",
   location: "Ho Chi Minh City, Vietnam",
   university: "VNUHCM - University of Science (HCMUS)",
-  major: "Information Technology",
-  graduation: "2023 - 2027",
+  major: "Information Technology (Software Engineering)",
+  graduation: "09/2023 – 09/2027 (Senior)",
   gpa: "3.2 / 4.0",
   github: "https://github.com/wokovn",
   linkedin: "https://www.linkedin.com/in/ng-anh-khoa/",
   customDomain: "https://wokovn.id.vn",
-  summary: "Software Engineer with hands-on industry experience architecting distributed backend services, high-throughput event-driven modular backend, and autonomous Multi-Agent AI engines. Strong engineering foundation in TypeScript, Node.js, React 19, Java (Spring Boot), Python (FastAPI), Redis, PostgreSQL, and Kubernetes autoscaling."
+  summary:
+    "Full-Stack Software Engineer building fast, reliable web applications and AI automation tools, with hands-on production delivery at ISB Vietnam across TypeScript, Node.js, React, Next.js, Vue 3, PostgreSQL, and Docker.",
+  recruiterQuickRead: {
+    bestFitRoles: [
+      "Full-Stack Software Engineer (TypeScript / React / Node.js)",
+      "Frontend Engineer (React / Next.js / Vue 3)",
+      "Backend / AI Systems Engineer"
+    ],
+    highlights: [
+      "Production internship at ISB Vietnam delivering secure HR & AI analytics products",
+      "Strong CS foundation at VNUHCM-US (HCMUS), GPA 3.2/4.0, graduating 2027",
+      "Delivered measurable wins: 54% faster CI checks, 5.8x AI data coverage, 23 security fixes"
+    ],
+    languages: "Vietnamese (Native) · English (Professional working proficiency)"
+  }
 };
 
 export const coreMetrics = [
   {
-    label: "Peak Stress Throughput",
-    value: "87.2 RPS",
-    detail: "2.42x boost under 350 VUs (158K+ reqs)",
-    badge: "ArkNet Stress Test",
-    icon: "zap"
+    id: "throughput",
+    label: "2.4x FASTER UNDER TRAFFIC",
+    numericValue: 87.2,
+    suffix: " RPS",
+    decimals: 1,
+    detail: "Served 350 concurrent users cleanly (0.8% errors)",
+    badge: "Scalability",
+    spark: [24, 31, 36, 48, 63, 74, 87.2]
   },
   {
-    label: "Automated Test Harness",
-    value: "5,600+",
-    detail: "Unit & integration tests cut by 2x runtime",
-    badge: "Vitest + Docker CI",
-    icon: "check-circle"
+    id: "tests",
+    label: "54% FASTER RELEASE CHECKS",
+    numericValue: 5600,
+    suffix: "+",
+    decimals: 0,
+    detail: "Automated tests cutting CI wait 352s → 162s",
+    badge: "Quality & CI",
+    spark: [42, 48, 55, 68, 79, 91, 100]
   },
   {
-    label: "Multi-Agent Data Throughput",
-    value: "5.8x",
-    detail: "Rows analyzed (hours down to ~5 mins)",
-    badge: "ISB Vietnam Engine",
-    icon: "cpu"
+    id: "agents",
+    label: "~8H WORK CUT TO ~5 MINS",
+    numericValue: 5.8,
+    suffix: "x",
+    decimals: 1,
+    detail: "More company data rows analyzed via AI agents",
+    badge: "AI Automation",
+    spark: [18, 25, 38, 54, 71, 86, 98]
   },
   {
-    label: "ReDoS & PII Optimization",
-    value: "<200ms",
-    detail: "Down from 3-18s with Vault wrapped DEK",
-    badge: "Vault + Regex Tuning",
-    icon: "shield"
+    id: "redos",
+    label: "3–18s DELAY → UNDER 0.2s",
+    prefix: "<",
+    numericValue: 200,
+    suffix: "ms",
+    decimals: 0,
+    detail: "Fixed performance bottleneck + 23 security upgrades",
+    badge: "HR Security",
+    spark: [96, 84, 62, 44, 28, 19, 12]
   }
 ];
 
 export const projects = [
   {
     id: "arknet",
-    title: "ArkNet: Scalable Distributed Social Platform",
-    tagline: "Stateless Express 5 backend with hybrid push/pull feed, Redis Lua trending, and Kubernetes HPA",
+    title: "ArkNet: Scalable Social Media Platform",
+    tagline: "Built to handle 350 concurrent users smoothly without crashing",
     repo: "https://github.com/wokovn/SocialMediaProject",
     category: "Distributed Systems & Cloud",
-    tags: ["TypeScript", "Node.js (Express 5)", "React 19", "PostgreSQL", "Drizzle ORM", "Redis", "BullMQ", "Socket.IO", "Docker", "Kubernetes"],
-    highlight: "87.2 RPS under 350 concurrent users with 0 downtime fallback",
-    description: "A production-grade, modular Node.js backend engineered for high concurrency, real-time engagement via WebSockets, and resilient background media processing.",
-    architecture: [
-      { step: "Client", desc: "React 19 SPA (Vite) with Socket.IO client" },
-      { step: "Ingress", desc: "Nginx reverse proxy with path-based routing & rate limiting" },
-      { step: "Core API", desc: "Express 5 stateless backend pods scaled with Kubernetes HPA (2 to 10 replicas)" },
-      { step: "Cache & PubSub", desc: "Redis cluster with atomic Lua scripts for time-decayed ranking & feed cache" },
-      { step: "Job Queue", desc: "9 BullMQ asynchronous worker queues for fanout, ranking, like/comment sync & media" },
-      { step: "Storage & DB", desc: "PostgreSQL (Supabase) with transactional connection pooling & Supabase S3" }
+    tags: [
+      "TypeScript",
+      "Node.js (Express 5)",
+      "React 19",
+      "PostgreSQL",
+      "Drizzle ORM",
+      "Redis Lua",
+      "BullMQ",
+      "Socket.IO",
+      "Docker",
+      "Kubernetes HPA"
     ],
-    benchmarks: {
-      baseline: { rps: 36.0, errorRate: "28.4%", mediaSuccess: "34.5%", pods: 2 },
-      optimized: { rps: 87.2, errorRate: "0.8%", mediaSuccess: "86.2%", pods: "Up to 10 (HPA)" }
-    },
-    codeSnippet: `-- Time-decayed ranking atomic Lua script in Redis
+    highlight: "2.42x faster throughput & 35x fewer errors under peak traffic",
+    description:
+      "Production-grade modular Node.js backend engineered for high concurrency, real-time WebSocket engagement, and non-blocking media pipelines.",
+    architecture: [
+      { step: "Client", desc: "React 19 web interface with live Socket.IO updates" },
+      { step: "Ingress", desc: "Nginx gateway routing traffic & blocking abuse" },
+      { step: "Core API", desc: "Stateless Node.js servers scaling automatically (2 → 10 pods)" },
+      { step: "Cache", desc: "Redis executing sub-millisecond trending ranking scripts" },
+      { step: "Queues", desc: "9 background worker queues keeping user actions snappy" },
+      { step: "Database", desc: "PostgreSQL with connection pooling & cloud file storage" }
+    ],
+    codeSnippet: `-- Atomic Redis Lua time-decay trending score (<1ms)
 local score = redis.call('ZSCORE', KEYS[1], ARGV[1])
 if not score then score = 0 end
-local new_score = (tonumber(score) * math.exp(-0.05 * tonumber(ARGV[2]))) + tonumber(ARGV[3])
+local decayed = tonumber(score) * math.exp(-0.05 * tonumber(ARGV[2]))
+local new_score = decayed + tonumber(ARGV[3])
 redis.call('ZADD', KEYS[1], new_score, ARGV[1])
 return new_score`
   },
   {
-    id: "vietnamese-tts",
-    title: "News Summary & Vietnamese Regional TTS System",
-    tagline: "Full-Stack AI & GPU Voice Synthesis with regional dialect adaptation",
-    repo: "https://github.com/wokovn/Project-LT-ML-23KHDL1-HCMUS",
-    category: "AI & Audio Engineering",
-    tags: ["React 19", "Node.js", "Express", "FastAPI", "Python", "PyTorch (CUDA)", "Gemini API", "Puppeteer", "FFmpeg", "Supabase"],
-    highlight: "27.1h Vietnamese speech corpus EDA + multi-dialect neural synthesis runtime",
-    description: "A multi-service platform combining real-time news scraping, Gemini AI context-aware summarization, and GPU-accelerated Vietnamese speech synthesis with regional dialect adaptability.",
-    architecture: [
-      { step: "Crawler", desc: "Brave Search API + Puppeteer headless scraper" },
-      { step: "AI Summarizer", desc: "Google Gemini API context-aware structured summarizer" },
-      { step: "FastAPI Engine", desc: "GPU-accelerated PyTorch (CUDA) vnTTS neural inference server" },
-      { step: "Transcoder", desc: "FFmpeg pipeline converting WAV to MP3 audio (64k)" },
-      { step: "Audio Storage", desc: "Supabase public audio buckets with storage delivery" }
-    ]
-  },
-  {
     id: "isb-systems",
-    title: "Multi-Agent Engine & Enterprise HR Platform",
-    tagline: "Production systems built during internship at ISB Vietnam",
+    title: "AI Company Data Analyst & HR Security (ISB Vietnam)",
+    tagline: "Production tools shipped during full-stack internship",
     repo: "https://github.com/wokovn",
-    category: "Enterprise AI & Systems",
-    tags: ["TypeScript", "Next.js 15", "React 19", "Vue 3", "Node.js", "Java 21", "Spring Boot 4", "HashiCorp Vault", "n8n", "vLLM", "Docker"],
-    highlight: "Multi-Agent decomposition engine + Vault-managed field-level PII encryption",
-    description: "Architected enterprise-grade systems at ISB Vietnam, delivering high-impact Multi-Agent query decomposition, high-security PII encryption, and massive test suite optimization.",
-    features: [
-      {
-        title: "Multi-Agent Deep-Analysis Engine",
-        detail: "Lead Agent decomposes complex business queries and delegates to parallel Helper Agents with in-memory SQLite sandboxes and automated citation verification, boosting analyzed data rows by 5.8x and cutting analysis time from hours to ~5 minutes."
-      },
-      {
-        title: "Vault-Managed PII Encryption with Blind Indexing",
-        detail: "Engineered field-level encryption with wrapped Data Encryption Keys (DEK) and HMAC blind indexing, allowing exact searches on encrypted PII without decrypting entire tables."
-      },
-      {
-        title: "ReDoS & Performance Tuning",
-        detail: "Optimized vulnerable Catastrophic Backtracking regex patterns in contract parsers, dropping execution latency from 3-18 seconds down to under 200ms."
-      },
-      {
-        title: "5,600+ Test Harness & CI/CD",
-        detail: "Constructed isolated per-worker Docker PostgreSQL containers for parallel testing, cutting full pipeline execution from 352s down to 162s."
-      }
-    ]
-  },
-  {
-    id: "petcarex",
-    title: "PetCareX: Database-First Multi-Branch System",
-    tagline: "Advanced 3NF relational schema, indexing strategies, and automated triggers",
-    repo: "https://github.com/wokovn/PetCareX-ADB-HCMUS",
-    category: "Database Engineering",
-    tags: ["SQL Server (MSSQL)", "Node.js", "Express 5", "React 19", "Drizzle ORM", "Zod", "Vite"],
-    highlight: "30+ entities 3NF normalization with Sequential UUID index optimization",
-    description: "A comprehensive veterinary clinic management system engineered for strict ACID transactions, complex check constraints, and high-volume query efficiency across multiple branches.",
-    features: [
-      {
-        title: "Index Fragmentation Mitigation",
-        detail: "Adopted Sequential UUIDs (COMB) to prevent random B-Tree page splits, coupled with composite clustered and non-clustered indexes on high-frequency join keys."
-      },
-      {
-        title: "Automated Triggers & Stored Procs",
-        detail: "Encapsulated real-time inventory synchronization, tiered customer loyalty updates, and audit trails directly in the database layer for atomic consistency."
-      }
-    ]
+    category: "Enterprise AI & Security",
+    tags: [
+      "TypeScript",
+      "Next.js 15",
+      "React 19",
+      "Vue 3",
+      "Node.js",
+      "PostgreSQL",
+      "HashiCorp Vault",
+      "MCP",
+      "n8n",
+      "Docker"
+    ],
+    highlight: "Automated hours of manual data work + protected sensitive HR contracts",
+    description:
+      "Delivered enterprise production systems at ISB Vietnam: Multi-Agent data analysis orchestrator, HashiCorp Vault PII encryption, and 5,600+ automated CI tests."
   },
   {
     id: "eshop-qa-testing",
-    title: "EShop Automated QA Harness",
-    tagline: "End-to-end testing, API regression, and stress testing with CI/CD integration",
+    title: "EShop Automated Testing & Load Suite",
+    tagline: "End-to-end browser, API, and 500-user stress verification",
     repo: "https://github.com/wokovn/Group06_HW2_Testing",
-    category: "QA Engineering & CI/CD",
-    tags: ["Playwright", "Postman", "Newman", "Apache JMeter", "GitHub Actions", "Docker"],
-    highlight: "Automated E2E test suites + JMeter stress tests integrated into CI/CD pipelines",
-    description: "A multi-layer test suite covering cross-browser UI journeys, REST API contract regressions, and high-concurrency JMeter load testing."
+    category: "QA Engineering & Performance",
+    tags: ["Playwright", "TypeScript", "Postman", "Newman", "k6", "GitHub Actions", "Allure"],
+    highlight: "117 automated browser runs, 150+ API checks, caught 7 real backend bugs",
+    description:
+      "Multi-layer automated verification harness spanning cross-browser Page Object Model journeys, CI/CD REST contract assertions, and k6 stress profiles."
+  },
+  {
+    id: "petcarex",
+    title: "PetCareX: Multi-Branch Veterinary System",
+    tagline: "Clean 30+ table database architecture built for zero slowdown",
+    repo: "https://github.com/wokovn/PetCareX-ADB-HCMUS",
+    category: "Database Engineering",
+    tags: ["SQL Server (MSSQL)", "Node.js", "Express 5", "React 19", "Drizzle ORM", "Zod", "Vite"],
+    highlight: "Eliminated database index fragmentation across 30+ normalized tables",
+    description:
+      "Multi-branch veterinary management system designed around ACID transactions, composite indexing, and database-level triggers."
+  },
+  {
+    id: "vietnamese-tts",
+    title: "Vietnamese News Reader & AI Voice Pipeline",
+    tagline: "Scrapes news, summarizes with Gemini AI, and reads aloud in regional voices",
+    repo: "https://github.com/wokovn/Project-LT-ML-23KHDL1-HCMUS",
+    category: "AI & Audio Pipeline",
+    tags: [
+      "React 19",
+      "Node.js",
+      "Express",
+      "Gemini API",
+      "Puppeteer",
+      "VieNeu-TTS",
+      "FFmpeg",
+      "Supabase"
+    ],
+    highlight: "Real Phase 3 AI voice outputs trained on 27.1h Vietnamese speech corpus",
+    description:
+      "Decoupled media pipeline aggregating news via Brave Search + Puppeteer, generating structured Gemini summaries, and synthesizing regional Vietnamese speech."
   }
 ];
 
 export const experience = [
   {
-    company: "ISB Vietnam",
-    role: "Fullstack Software Engineer Intern (Backend, Full-Stack & AI Systems)",
-    period: "08/2026 - 11/2026",
+    index: "01",
+    kind: "WORK EXPERIENCE",
+    company: "ISB Vietnam (IVC)",
+    role: "Fullstack Software Engineer Intern (AI & Automation)",
+    period: "08/2026 – 11/2026 (4 mos)",
     location: "Ho Chi Minh City, Vietnam",
-    summary: "Engineered core backend platforms, Multi-Agent query engines, security infrastructures, and automated testing pipelines for production enterprise applications.",
+    plainEnglish:
+      "Built internal AI data analysis tools, secured sensitive employee contract systems, and sped up the engineering team's automated release checks by half.",
     achievements: [
-      "Architected a Multi-Agent Orchestration Engine (TypeScript, Vue 3, PostgreSQL, MCP) with Lead/Helper agent decomposition and SQLite sandbox, boosting analyzed rows by 5.8x.",
-      "Built enterprise HR contract renewal platform (Next.js 15, React 19, Node.js) with Vault-managed field-level PII encryption (wrapped DEK) and HMAC blind indexing.",
-      "Optimized ReDoS regex bottlenecks (cutting parsing latency from 3-18s down to <200ms) and webhook event routing (1 minute down to ~2s).",
-      "Constructed a 1-to-N Bulk CV Screening & Matching Engine in Java 21 / Spring Boot 4 / MyBatis with Grouped Rollups APIs eliminating N+1 queries.",
-      "Built the automated testing harness with 5,600+ tests (Vitest + Docker test containers), cutting CI/CD runtime from 352s to 162s."
+      "Built a Multi-Agent AI Analysis Assistant (TypeScript, Vue 3, PostgreSQL) that turned ~8 hours of manual data analysis into ~5 minutes while checking 5.8x more data rows.",
+      "Delivered the enterprise HR Contract Renewal app (Next.js 15, React 19, Node.js) with field-level PII encryption (HashiCorp Vault) and resolved 23/24 security audit findings.",
+      "Fixed slow text-parsing bottlenecks (3–18 seconds cut to under 0.2 seconds) and sped up webhook notifications from ~1 minute to ~2 seconds.",
+      "Created a 5,600+ automated test suite using isolated Docker databases, cutting CI wait times by 54% (352s → 162s) for every team deployment."
     ]
   },
   {
+    index: "02",
+    kind: "EDUCATION",
     company: "VNUHCM - University of Science (HCMUS)",
-    role: "Bachelor of Information Technology",
-    period: "09/2023 - 2027",
+    role: "B.S. in Information Technology (Software Engineering)",
+    period: "09/2023 – 09/2027",
     location: "Ho Chi Minh City, Vietnam",
-    summary: "Top national university for computer science in Vietnam. Maintained a 3.2 / 4.0 GPA while spearheading high-concurrency distributed systems and AI research projects.",
+    plainEnglish:
+      "Senior-year IT student (GPA 3.2 / 4.0) specializing in Software Engineering, high-concurrency web systems, and database architecture.",
     achievements: [
-      "Specialized in Software Engineering, Advanced Database Systems, and Distributed Computing.",
-      "Lead developer for multiple capstone-level projects: ArkNet (Distributed Social Platform), Vietnamese Regional TTS & News AI.",
-      "Recognized for top performance in Advanced Database Optimization and Automated Testing."
+      "Led architecture and full-stack delivery across capstone team projects: ArkNet (Social Platform), EShop QA Suite, PetCareX Database System, and News AI Voice.",
+      "Strong practical coursework results: Web Development (9.8/10), Mobile App Development (9.1/10), Software Design (8.9/10), and Machine Learning (8.6/10).",
+      "Applied engineering best practices across automated E2E browser testing (Playwright), CI API contract verification, and load benchmarking."
+    ],
+    coursework: [
+      { code: "CSC13008", name: "Web Application Development", score: 9.8 },
+      { code: "CSC13009", name: "Mobile App Development", score: 9.1 },
+      { code: "CSC13010", name: "Software Design", score: 8.9 },
+      { code: "CSC13005", name: "Requirements Engineering", score: 8.6 },
+      { code: "CSC14005", name: "Intro to Machine Learning", score: 8.6 },
+      { code: "CSC10003", name: "Object-Oriented Programming", score: 8.6 }
     ]
   }
 ];
@@ -185,143 +227,112 @@ export const experience = [
 export const skillsData = {
   categories: [
     {
-      id: "backend",
-      name: "Backend & Distributed Systems",
+      id: "frontend",
+      name: "Frontend & UI Craft",
       skills: [
-        { 
-          name: "TypeScript & Node.js (Express 5)", 
-          tag: "Production Core", 
-          project: "ArkNet & ISB Vietnam", 
-          desc: "Architected stateless modular backend, secure authentication, and resilient API handling 87.2 RPS on Kubernetes." 
+        {
+          name: "TypeScript, React 19 & Next.js 15",
+          tag: "Primary Stack",
+          project: "ISB & ArkNet",
+          desc: "Responsive web interfaces, clean state management, server/client rendering, and accessible interactive flows."
         },
-        { 
-          name: "Redis & BullMQ", 
-          tag: "High Concurrency", 
-          project: "ArkNet Platform", 
-          desc: "Authored atomic Lua scripts for time-decayed ranking (<1ms) and orchestrated 9 BullMQ worker queues for async jobs." 
+        {
+          name: "Vue 3 & Interactive Workflows",
+          tag: "Enterprise UI",
+          project: "ISB Multi-Agent",
+          desc: "Visual agent execution graphs, recovery dashboards, and internal enterprise admin consoles."
         },
-        { 
-          name: "Java 21 & Spring Boot 4", 
-          tag: "Enterprise System", 
-          project: "ISB Vietnam", 
-          desc: "Engineered batch 1-to-N CV parsing engine; tuned MyBatis queries to eliminate N+1 query bottlenecks." 
-        },
-        { 
-          name: "Python & FastAPI", 
-          tag: "AI Model Serving", 
-          project: "HCMUS vnTTS", 
-          desc: "Constructed asynchronous API gateway coordinating neural voice synthesis models accelerated on CUDA GPUs." 
-        },
-        { 
-          name: "WebSockets & Socket.IO", 
-          tag: "Real-time Event", 
-          project: "ArkNet Platform", 
-          desc: "Distributed real-time user presence, notifications, and instant messaging using Redis Pub/Sub adapters." 
+        {
+          name: "Tailwind CSS & Motion Physics",
+          tag: "Design Systems",
+          project: "Portfolio & Apps",
+          desc: "Consistent design tokens, spring animations, HiDPI vector graphics, and mobile-first responsive layouts."
         }
       ]
     },
     {
-      id: "database",
-      name: "Databases & Security Architecture",
+      id: "backend",
+      name: "Backend & APIs",
       skills: [
-        { 
-          name: "PostgreSQL & Drizzle ORM", 
-          tag: "Relational Modeling", 
-          project: "ArkNet & ISB", 
-          desc: "Designed relational schema, transactional connection pooling, and safe production migration workflows." 
+        {
+          name: "Node.js (Express 5) & TypeScript",
+          tag: "87.2 RPS Verified",
+          project: "ArkNet & ISB",
+          desc: "Scalable REST APIs, webhook event routing (~1m → ~2s), and secure input validation."
         },
-        { 
-          name: "HashiCorp Vault & Data Security", 
-          tag: "Enterprise Security", 
-          project: "ISB Vietnam", 
-          desc: "Implemented field-level PII encryption with Wrapped DEK; executed exact search queries via HMAC Blind Indexing." 
+        {
+          name: "Redis & BullMQ Background Jobs",
+          tag: "9 Worker Queues",
+          project: "ArkNet Platform",
+          desc: "Caching, fast feed ranking scripts, and background job processing so user pages stay fast."
         },
-        { 
-          name: "SQL Server (MSSQL)", 
-          tag: "Database Tuning", 
-          project: "PetCareX System", 
-          desc: "Structured 3NF schema; applied Sequential COMB UUIDs to completely eliminate B-Tree index fragmentation." 
-        },
-        { 
-          name: "In-Memory SQLite", 
-          tag: "Agent Sandboxing", 
-          project: "ISB Vietnam", 
-          desc: "Provisioned isolated ephemeral RAM databases, safeguarding production databases during AI code execution." 
+        {
+          name: "Real-Time WebSockets (Socket.IO)",
+          tag: "Live Updates",
+          project: "ArkNet Platform",
+          desc: "Instant live notifications, presence, and multi-server messaging."
         }
       ]
     },
     {
       id: "ai",
-      name: "AI & Autonomous Agent Systems",
+      name: "AI Tools & Automation",
       skills: [
-        { 
-          name: "Multi-Agent Orchestration (MCP)", 
-          tag: "Autonomous AI", 
-          project: "ISB Vietnam", 
-          desc: "Architected Lead/Helper agent query decomposition, scaling analyzed row volume by 5.8x in under 5 minutes." 
+        {
+          name: "Multi-Agent Systems (MCP)",
+          tag: "~8h Work → 5m",
+          project: "ISB Vietnam",
+          desc: "Coordinating multiple specialized AI agents with isolated data sandboxes and automated fact checks."
         },
-        { 
-          name: "LLM APIs & Prompt Engineering", 
-          tag: "Production AI", 
-          project: "News Intelligence", 
-          desc: "Integrated Gemini API & vLLM: Structured JSON extraction, noise reduction, and automated news summarization." 
-        },
-        { 
-          name: "Neural Audio & PyTorch", 
-          tag: "HCMUS Research", 
-          project: "vnTTS Corpus", 
-          desc: "Conducted EDA on 27.1h speech corpus (14,475 audio-text pairs) and deployed GPU neural inference pipeline." 
+        {
+          name: "n8n, Gemini API & Prompt Design",
+          tag: "Workflow Auto",
+          project: "ISB & News AI",
+          desc: "End-to-end automated workflows connecting web data, LLMs, and reliable JSON outputs."
         }
       ]
     },
     {
-      id: "frontend",
-      name: "Frontend & UI Engineering",
+      id: "database",
+      name: "Databases & Security",
       skills: [
-        { 
-          name: "React 19 & Next.js 15", 
-          tag: "Modern Frontend", 
-          project: "ArkNet & ISB Platform", 
-          desc: "Optimized React Server Components, client state reactivity, and high-performance zero-latency user flows." 
+        {
+          name: "PostgreSQL & Drizzle ORM",
+          tag: "Primary Database",
+          project: "ArkNet & ISB",
+          desc: "Clean relational table design, connection pooling, and safe schema migrations."
         },
-        { 
-          name: "Tailwind CSS & Motion", 
-          tag: "Neobrutal UI", 
-          project: "Portfolio & Dashboards", 
-          desc: "Engineered playful Neobrutalist design system, scrollytelling physics, and non-linear spring transitions." 
+        {
+          name: "HashiCorp Vault & Data Protection",
+          tag: "23/24 Sec Fixes",
+          project: "ISB HR Platform",
+          desc: "Encrypting sensitive employee PII fields while still keeping exact database search fast."
         },
-        { 
-          name: "Vue 3 & TypeScript", 
-          tag: "Enterprise Dashboard", 
-          project: "ISB Vietnam", 
-          desc: "Built enterprise internal administration portals for agent monitoring and organizational reporting." 
+        {
+          name: "SQL Server (MSSQL)",
+          tag: "30+ Table Schema",
+          project: "PetCareX",
+          desc: "Normalized relational modeling, index optimization, triggers, and stored procedures."
         }
       ]
     },
     {
       id: "devops",
-      name: "DevOps, Cloud & Automated QA",
+      name: "Cloud, DevOps & Automated QA",
       skills: [
-        { 
-          name: "Kubernetes (K8s HPA)", 
-          tag: "Cloud Autoscaling", 
-          project: "ArkNet Stress Lab", 
-          desc: "Configured Horizontal Pod Autoscaler dynamically scaling replicas from 2 to 10 based on CPU/memory telemetry." 
+        {
+          name: "Docker & Kubernetes Scaling",
+          tag: "2 → 10 Replicas",
+          project: "ArkNet & ISB CI",
+          desc: "Containerized apps, automatic server scaling during traffic spikes, and fast CI test containers."
         },
-        { 
-          name: "Vitest & Automated QA", 
-          tag: "5,600+ Test Suite", 
-          project: "ISB & PetCareX", 
-          desc: "Architected comprehensive test harnesses and parallel Playwright E2E suites, reducing CI runtime by 50%." 
-        },
-        { 
-          name: "Docker & Testcontainers", 
-          tag: "Containerization", 
-          project: "CI/CD Pipeline", 
-          desc: "Engineered multi-stage builds and isolated ephemeral database containers per worker thread in CI/CD." 
+        {
+          name: "Playwright, Vitest & k6 Testing",
+          tag: "5,600+ Tests",
+          project: "ISB & EShop QA",
+          desc: "Automated browser journeys, API checks, and high-concurrency stress tests before shipping."
         }
       ]
     }
   ]
 };
-

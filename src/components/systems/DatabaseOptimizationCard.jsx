@@ -1,33 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Database
-} from 'lucide-react';
+import { Database, ExternalLink, Plus, RotateCcw } from 'lucide-react';
 import { GithubIcon } from '../Icons';
+import { SpotlightBentoCard } from '../MotionPrimitives';
+import { sfx } from '../../utils/sfx';
 
 export default function DatabaseOptimizationCard({ petcarex }) {
+  const [strategy, setStrategy] = useState('comb');
+  const [pages, setPages] = useState([95, 92, 88, 35]);
+  const [splits, setSplits] = useState(0);
+  const [autoCycle, setAutoCycle] = useState(true);
+
+  useEffect(() => {
+    if (!autoCycle) return undefined;
+    let tick = 0;
+    const id = setInterval(() => {
+      tick += 1;
+      if (tick % 4 === 0) {
+        setPages([95, 92, 88, 35]);
+        setSplits(0);
+        setStrategy('comb');
+      } else if (tick % 3 === 0) {
+        setStrategy('random');
+        setSplits((s) => s + 1);
+        setPages([64, 58, 71, 49]);
+      } else {
+        setStrategy('comb');
+        setPages((prev) => {
+          const next = [...prev];
+          const tailIdx = next.length - 1;
+          next[tailIdx] = Math.min(100, next[tailIdx] + 18);
+          return next;
+        });
+      }
+    }, 2200);
+    return () => clearInterval(id);
+  }, [autoCycle]);
+
+  const insertKey = (mode) => {
+    setAutoCycle(false);
+    setStrategy(mode);
+    sfx.playTick(mode === 'comb' ? 780 : 420);
+    if (mode === 'comb') {
+      setPages((prev) => {
+        const next = [...prev];
+        const tailIdx = next.length - 1;
+        if (next[tailIdx] < 96) {
+          next[tailIdx] = Math.min(100, next[tailIdx] + 15);
+        } else {
+          next.push(25);
+          if (next.length > 4) next.shift();
+        }
+        return next;
+      });
+    } else {
+      setSplits((s) => s + 1);
+      setPages((prev) =>
+        prev.map((val) => {
+          const bumped = val + Math.floor(Math.random() * 24 + 10);
+          return bumped > 100 ? Math.floor(Math.random() * 25 + 42) : bumped;
+        })
+      );
+    }
+  };
+
+  const resetSim = () => {
+    sfx.playTick(540);
+    setPages([95, 92, 88, 35]);
+    setSplits(0);
+    setStrategy('comb');
+  };
+
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="neo-card p-5 sm:p-7 bg-white shadow-neo-xl border-2 border-[#121316] space-y-6 flex flex-col justify-between"
-    >
+    <SpotlightBentoCard className="p-5 sm:p-6 flex flex-col justify-between">
       <div className="space-y-5">
-        
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b-2 border-[#121316]">
-          <div className="flex items-center gap-2.5">
-            <span className="p-2 rounded-xl border-2 border-[#121316] bg-neo-green font-bold flex items-center justify-center">
-              <Database className="w-5 h-5 text-[#121316]" />
+        <div className="flex items-start justify-between gap-3 pb-4 border-b border-[var(--border-hairline)]">
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[var(--signal)]">
+              LAB 04 // B-TREE &amp; CI CONTAINERIZATION
             </span>
-            <div>
-              <h3 className="text-lg sm:text-xl font-black text-[#121316] tracking-tight">
-                Database Architecture &amp; CI Suite
-              </h3>
-              <p className="text-xs font-mono font-bold text-slate-600">MSSQL 3NF • Vitest • Docker CI</p>
-            </div>
+            <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight">
+              PetCareX Index &amp; Vitest CI Tuning
+            </h3>
           </div>
 
           {petcarex?.repo && (
@@ -35,73 +90,103 @@ export default function DatabaseOptimizationCard({ petcarex }) {
               href={petcarex.repo}
               target="_blank"
               rel="noopener noreferrer"
-              className="neo-btn-secondary text-xs py-1.5 px-2.5"
+              className="swiss-btn-secondary py-1.5 px-2.5 text-[11px]"
             >
-              <GithubIcon className="w-4 h-4" />
+              <GithubIcon className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3 h-3" />
             </a>
           )}
         </div>
 
-        {/* Architecture Impact Box */}
-        <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-green/10 space-y-1">
-          <span className="text-[10px] font-mono font-black text-[#121316] uppercase block">
-            CODE QUALITY &amp; DATABASE OPTIMIZATION:
-          </span>
-          <p className="text-xs text-slate-800 font-medium leading-relaxed">
-            Engineered an automated test harness with over <strong>5,600+ test cases</strong>, cutting CI pipeline runtime by 50% (from 352s to 162s) and eliminating B-Tree index fragmentation via Sequential COMB UUIDs.
+        {/* Interactive B-Tree Page Split Simulator */}
+        <div className="bento-well p-3.5 space-y-3">
+          <div className="flex items-center justify-between text-[10px] font-mono font-bold">
+            <span className="flex items-center gap-1.5">
+              <Database className="w-3.5 h-3.5 text-[var(--signal)]" />
+              <span>B-TREE LEAF PAGE SIMULATOR</span>
+            </span>
+            <span className={splits > 0 ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-400'}>
+              {splits} PAGE SPLITS
+            </span>
+          </div>
+
+          {/* 4 Live Leaf Pages */}
+          <div className="grid grid-cols-4 gap-2 font-mono">
+            {pages.map((fill, i) => {
+              const fragmented = strategy === 'random' && fill < 72;
+              return (
+                <div
+                  key={i}
+                  className="p-2 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] space-y-1.5"
+                >
+                  <div className="flex justify-between text-[9px] text-[var(--text-muted)]">
+                    <span>PG-0{i + 1}</span>
+                    <span className="font-bold text-[var(--text-primary)] tabular-nums">{fill}%</span>
+                  </div>
+                  <div className="h-14 rounded-lg bg-[var(--bg-well)] flex items-end overflow-hidden p-0.5">
+                    <motion.div
+                      animate={{ height: `${fill}%` }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+                      className={`w-full rounded-md ${
+                        fragmented ? 'bg-rose-500' : 'bg-emerald-500'
+                      }`}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div className="flex gap-1.5">
+              <button
+                onClick={() => insertKey('comb')}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[var(--text-primary)] text-[var(--bg-canvas)] font-mono text-[10px] font-bold hover:opacity-90"
+              >
+                <Plus className="w-3 h-3" />
+                <span>Insert COMB UUID</span>
+              </button>
+              <button
+                onClick={() => insertKey('random')}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-rose-500/50 text-rose-500 font-mono text-[10px] font-bold hover:bg-rose-500/10"
+              >
+                <Plus className="w-3 h-3" />
+                <span>Insert UUIDv4</span>
+              </button>
+            </div>
+            <button
+              onClick={resetSim}
+              aria-label="Reset B-Tree pages"
+              className="tactile-chip p-1.5 rounded-lg"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* 5,600+ Vitest Docker Container Isolation */}
+        <div className="p-3.5 rounded-xl border border-[var(--border-hairline)] space-y-2 font-mono text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-[var(--text-muted)]">
+              5,600+ VITEST + DOCKER TESTCONTAINERS
+            </span>
+            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              352s → 162s (-54%)
+            </span>
+          </div>
+          <p className="text-xs font-sans text-[var(--text-muted)] leading-relaxed">
+            Isolated per-worker PostgreSQL containers eliminated lock contention across parallel CI threads, while PetCareX normalized 30+ entities in 3NF with composite indexing &amp; triggers.
           </p>
         </div>
-
-        {/* B-Tree Fragmentation Visualizer */}
-        <div className="p-3.5 rounded-xl border-2 border-[#121316] bg-[#FFFDF7] shadow-neo-sm space-y-2.5">
-          <div className="font-mono text-xs font-bold text-[#121316]">
-            SEQUENTIAL COMB UUID vs RANDOM UUID
-          </div>
-
-          <div className="space-y-2 text-xs font-mono">
-            <div>
-              <div className="flex justify-between text-[11px] mb-1">
-                <span>Sequential COMB UUID (Optimized):</span>
-                <span className="font-bold text-emerald-600">0% B-Tree Page Splits</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
-                <div className="h-full bg-neo-green w-[98%]" />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-[11px] mb-1">
-                <span>Random UUIDv4 (Standard):</span>
-                <span className="font-bold text-rose-600">74% IOPS &amp; RAM Waste</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full border border-[#121316] bg-slate-100 overflow-hidden">
-                <div className="h-full bg-rose-500 w-[74%]" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Test Harness Stats */}
-        <div className="p-3 rounded-xl border-2 border-[#121316] bg-neo-yellow/20 space-y-1 text-xs font-mono">
-          <div className="font-bold text-[#121316] flex items-center justify-between">
-            <span>5,600+ AUTOMATED TEST SUITE</span>
-            <span className="text-emerald-700 font-black">2x SPEEDUP</span>
-          </div>
-          <p className="text-slate-700 text-[11px] pt-0.5 leading-relaxed">
-            Parallel Docker test containers isolate worker environments, cutting full pipeline execution from 352s down to 162s.
-          </p>
-        </div>
-
       </div>
 
-      {/* Tech Tags */}
-      <div className="pt-3 border-t-2 border-[#121316] flex flex-wrap gap-1.5">
-        {['SQL Server', 'Drizzle ORM', 'Vitest', 'Docker', 'Playwright'].map((t, i) => (
-          <span key={i} className="neo-tag text-[10px]">
+      <div className="pt-4 mt-5 border-t border-[var(--border-hairline)] flex flex-wrap gap-1.5">
+        {['SQL Server', 'Sequential UUID', '3NF Schema', 'Vitest', 'Docker CI'].map((t) => (
+          <span key={t} className="swiss-tag text-[10px]">
             {t}
           </span>
         ))}
       </div>
-    </motion.div>
+    </SpotlightBentoCard>
   );
 }
