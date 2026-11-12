@@ -13,7 +13,7 @@ import { ScrambleText, SpotlightBentoCard } from './MotionPrimitives';
 import { sfx } from '../utils/sfx';
 
 export default function ExperienceTimeline() {
-  const [showCourses, setShowCourses] = useState(true);
+  const [showCourses, setShowCourses] = useState(false);
 
   return (
     <section
@@ -52,8 +52,8 @@ export default function ExperienceTimeline() {
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
             >
-              <SpotlightBentoCard className="p-6 sm:p-8 space-y-5">
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-5 border-b border-[var(--border-hairline)]">
+              <SpotlightBentoCard className="p-5 sm:p-7 space-y-5">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 pb-4 border-b border-[var(--border-hairline)]">
                   <div className="flex items-start gap-4">
                     <div
                       className={`p-3 rounded-xl border border-[var(--border-hairline)] flex items-center justify-center shrink-0 ${
@@ -93,23 +93,19 @@ export default function ExperienceTimeline() {
                   </div>
                 </div>
 
-                {/* Clear 1-Sentence Plain-English Summary for Non-Tech Readers */}
-                <div className="p-4 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-well)]/60">
-                  <span className="text-[10px] font-mono font-bold text-[var(--signal)] block mb-1">
-                    IN SHORT
-                  </span>
-                  <p className="text-sm sm:text-base font-medium leading-relaxed">
-                    {item.plainEnglish}
-                  </p>
-                </div>
+                {/* Concise 1-Line Impact Summary */}
+                <p className="text-sm sm:text-base font-medium leading-snug text-[var(--text-primary)] px-3.5 py-2.5 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-well)]/55">
+                  <span className="font-mono text-[10px] font-bold text-[var(--signal)] mr-2">SUMMARY</span>
+                  {item.plainEnglish}
+                </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {item.achievements.map((ach, aIdx) => (
                     <div
                       key={aIdx}
-                      className="bento-well p-3.5 text-xs sm:text-sm leading-relaxed flex items-start gap-2.5"
+                      className="bento-well px-3.5 py-3 text-xs sm:text-[13px] leading-snug flex items-center gap-2.5"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                       <span>{ach}</span>
                     </div>
                   ))}
@@ -117,7 +113,7 @@ export default function ExperienceTimeline() {
 
                 {/* Coursework Benchmark Matrix for HCMUS */}
                 {item.coursework && (
-                  <div className="pt-3 border-t border-[var(--border-hairline)] space-y-3">
+                  <div className="pt-4 border-t border-[var(--border-hairline)] space-y-3">
                     <button
                       onClick={() => {
                         sfx.playTick(700);

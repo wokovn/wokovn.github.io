@@ -15,7 +15,8 @@ export default function SkillsMatrix() {
     { id: 'backend', label: 'Backend' },
     { id: 'ai', label: 'AI & Agents' },
     { id: 'database', label: 'Databases & Sec' },
-    { id: 'devops', label: 'Cloud & QA' }
+    { id: 'qa', label: 'QA & Load' },
+    { id: 'cloud', label: 'Cloud & CI' }
   ];
 
   const filteredCategories = useMemo(() => {
@@ -59,8 +60,8 @@ export default function SkillsMatrix() {
               <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.03em]">
                 Core Capabilities.
               </h2>
-              <p className="text-sm text-[var(--text-muted)] max-w-2xl">
-                Every capability mapped directly to shipped systems at ISB Vietnam and high-concurrency architectures.
+              <p className="text-sm text-[var(--text-muted)] max-w-xl">
+                Production stack shipped at ISB Vietnam and high-concurrency projects.
               </p>
             </div>
 
@@ -80,8 +81,8 @@ export default function SkillsMatrix() {
             </div>
           </div>
 
-          {/* Animated layoutId Filter Pills */}
-          <div className="flex flex-wrap gap-1.5">
+          {/* Tactile Filter Pills */}
+          <div className="flex flex-wrap gap-2">
             {categories.map((cat) => {
               const active = activeCategory === cat.id;
               return (
@@ -91,19 +92,12 @@ export default function SkillsMatrix() {
                     sfx.playTick(720);
                     setActiveCategory(cat.id);
                   }}
-                  className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold transition-colors z-10 border ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold ${
                     active
-                      ? 'text-[var(--bg-canvas)] border-transparent'
-                      : 'text-[var(--text-muted)] border-[var(--border-hairline)] bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'
+                      ? 'tactile-chip-active'
+                      : 'tactile-chip text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="skillCategoryPill"
-                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-                      className="absolute inset-0 rounded-xl bg-[var(--text-primary)] -z-10"
-                    />
-                  )}
                   {cat.label}
                 </button>
               );
@@ -122,6 +116,7 @@ export default function SkillsMatrix() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.25 }}
+                className="h-full"
               >
                 <SpotlightBentoCard className="p-5 sm:p-6 h-full space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-[var(--border-hairline)]">
@@ -133,27 +128,26 @@ export default function SkillsMatrix() {
                     </span>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {cat.skills.map((skill) => (
                       <div
                         key={skill.name}
-                        className="bento-well p-3.5 space-y-2 hover:border-[var(--border-strong)] transition-colors"
+                        className="bento-well p-3 space-y-1.5 hover:border-[var(--border-strong)] transition-colors"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-1.5">
                           <span className="text-xs sm:text-sm font-bold">{skill.name}</span>
-                          <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-hairline)]">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-surface)] border border-[var(--border-hairline)] shrink-0">
                             <FolderGit2 className="w-3 h-3 text-[var(--signal)]" />
                             <span>{skill.project}</span>
                           </span>
                         </div>
 
-                        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                          {skill.desc}
-                        </p>
-
-                        <div className="pt-0.5 flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                          <CheckCircle2 className="w-3 h-3" />
-                          <span>{skill.tag}</span>
+                        <div className="flex flex-wrap items-center justify-between gap-1.5 text-[11px]">
+                          <span className="text-[var(--text-muted)]">{skill.desc}</span>
+                          <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>{skill.tag}</span>
+                          </span>
                         </div>
                       </div>
                     ))}

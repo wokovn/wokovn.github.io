@@ -89,8 +89,8 @@ export default function ContactPage({ onBack }) {
             <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-[-0.03em]">
               Get in Touch with Khoa<span className="text-[var(--signal)]">.</span>
             </h1>
-            <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl">
-              To keep personal contact details safe on public repositories, phone numbers are shared privately upon email or LinkedIn inquiry. Use any channel below; I usually respond within 24 hours.
+            <p className="text-sm text-[var(--text-muted)] max-w-xl">
+              Direct phone numbers are shared privately upon email or LinkedIn inquiry. Replies typically within 24h.
             </p>
           </div>
         </div>

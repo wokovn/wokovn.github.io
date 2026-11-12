@@ -159,7 +159,7 @@ export function SpotlightBentoCard({ children, className = '', accentGlow = fals
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setCoords((prev) => ({ ...prev, active: false }))}
-      className={`bento-card relative overflow-hidden group ${className}`}
+      className="bento-card relative overflow-hidden group h-full"
     >
       {/* Pointer Radial Sheen */}
       <div
@@ -171,7 +171,7 @@ export function SpotlightBentoCard({ children, className = '', accentGlow = fals
           }, transparent 70%)`
         }}
       />
-      <div className="relative z-10 h-full">{children}</div>
+      <div className={`relative z-10 h-full ${className}`}>{children}</div>
     </div>
   );
 }

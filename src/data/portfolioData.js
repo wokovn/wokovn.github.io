@@ -18,19 +18,19 @@ export const personalInfo = {
   linkedin: "https://www.linkedin.com/in/ng-anh-khoa/",
   customDomain: "https://wokovn.id.vn",
   summary:
-    "Full-Stack Software Engineer building fast, reliable web applications and AI automation tools, with hands-on production delivery at ISB Vietnam across TypeScript, Node.js, React, Next.js, Vue 3, PostgreSQL, and Docker.",
+    "Full-Stack Engineer (TypeScript, React, Next.js, Node.js). Shipped production AI & HR security tools at ISB Vietnam.",
   recruiterQuickRead: {
     bestFitRoles: [
-      "Full-Stack Software Engineer (TypeScript / React / Node.js)",
+      "Full-Stack Engineer (TS / React / Node.js)",
       "Frontend Engineer (React / Next.js / Vue 3)",
       "Backend / AI Systems Engineer"
     ],
     highlights: [
-      "Production internship at ISB Vietnam delivering secure HR & AI analytics products",
-      "Strong CS foundation at VNUHCM-US (HCMUS), GPA 3.2/4.0, graduating 2027",
-      "Delivered measurable wins: 54% faster CI checks, 5.8x AI data coverage, 23 security fixes"
+      "ISB Vietnam Intern: Shipped AI & security apps in prod",
+      "HCMUS IT Senior (GPA 3.2/4.0 · Class of 2027)",
+      "54% faster CI · 5.8x AI rows · 23/24 security fixes"
     ],
-    languages: "Vietnamese (Native) · English (Professional working proficiency)"
+    languages: "Vietnamese (Native) · English (Professional)"
   }
 };
 
@@ -189,14 +189,14 @@ export const experience = [
     company: "ISB Vietnam (IVC)",
     role: "Fullstack Software Engineer Intern (AI & Automation)",
     period: "08/2026 – 11/2026 (4 mos)",
-    location: "Ho Chi Minh City, Vietnam",
+    location: "HCMC, Vietnam",
     plainEnglish:
-      "Built internal AI data analysis tools, secured sensitive employee contract systems, and sped up the engineering team's automated release checks by half.",
+      "Shipped AI data analysis tools, secured enterprise HR contracts, and cut release CI wait time in half.",
     achievements: [
-      "Built a Multi-Agent AI Analysis Assistant (TypeScript, Vue 3, PostgreSQL) that turned ~8 hours of manual data analysis into ~5 minutes while checking 5.8x more data rows.",
-      "Delivered the enterprise HR Contract Renewal app (Next.js 15, React 19, Node.js) with field-level PII encryption (HashiCorp Vault) and resolved 23/24 security audit findings.",
-      "Fixed slow text-parsing bottlenecks (3–18 seconds cut to under 0.2 seconds) and sped up webhook notifications from ~1 minute to ~2 seconds.",
-      "Created a 5,600+ automated test suite using isolated Docker databases, cutting CI wait times by 54% (352s → 162s) for every team deployment."
+      "~8h → ~5m: Multi-Agent AI checking 5.8x rows (TS, Vue, PG)",
+      "23/24 Security Fixes: Next.js 15 HR app + HashiCorp Vault",
+      "3–18s → <0.2s: Fixed parser freezes & ~2s webhook alerts",
+      "54% Faster CI: 5,600+ Vitest Docker tests (352s → 162s)"
     ]
   },
   {
@@ -205,13 +205,14 @@ export const experience = [
     company: "VNUHCM - University of Science (HCMUS)",
     role: "B.S. in Information Technology (Software Engineering)",
     period: "09/2023 – 09/2027",
-    location: "Ho Chi Minh City, Vietnam",
+    location: "HCMC, Vietnam",
     plainEnglish:
-      "Senior-year IT student (GPA 3.2 / 4.0) specializing in Software Engineering, high-concurrency web systems, and database architecture.",
+      "Senior IT student (GPA 3.2/4.0) focused on high-concurrency backends, databases, and QA automation.",
     achievements: [
-      "Led architecture and full-stack delivery across capstone team projects: ArkNet (Social Platform), EShop QA Suite, PetCareX Database System, and News AI Voice.",
-      "Strong practical coursework results: Web Development (9.8/10), Mobile App Development (9.1/10), Software Design (8.9/10), and Machine Learning (8.6/10).",
-      "Applied engineering best practices across automated E2E browser testing (Playwright), CI API contract verification, and load benchmarking."
+      "Senior IT student (Software Engineering) graduating 2027",
+      "Led delivery across ArkNet, EShop QA, PetCareX & News AI",
+      "Top grades: Web Dev (9.8), Mobile (9.1), SW Design (8.9)",
+      "Core craft: Playwright E2E, k6 load, Redis/BullMQ & SQL"
     ],
     coursework: [
       { code: "CSC13008", name: "Web Application Development", score: 9.8 },
@@ -228,25 +229,25 @@ export const skillsData = {
   categories: [
     {
       id: "frontend",
-      name: "Frontend & UI Craft",
+      name: "Frontend & UI",
       skills: [
         {
           name: "TypeScript, React 19 & Next.js 15",
           tag: "Primary Stack",
           project: "ISB & ArkNet",
-          desc: "Responsive web interfaces, clean state management, server/client rendering, and accessible interactive flows."
+          desc: "SSR/CSR web apps & interactive flows"
         },
         {
-          name: "Vue 3 & Interactive Workflows",
+          name: "Vue 3 & Interactive Graphs",
           tag: "Enterprise UI",
           project: "ISB Multi-Agent",
-          desc: "Visual agent execution graphs, recovery dashboards, and internal enterprise admin consoles."
+          desc: "Agent telemetry & admin consoles"
         },
         {
           name: "Tailwind CSS & Motion Physics",
           tag: "Design Systems",
           project: "Portfolio & Apps",
-          desc: "Consistent design tokens, spring animations, HiDPI vector graphics, and mobile-first responsive layouts."
+          desc: "Design tokens & responsive grids"
         }
       ]
     },
@@ -258,37 +259,43 @@ export const skillsData = {
           name: "Node.js (Express 5) & TypeScript",
           tag: "87.2 RPS Verified",
           project: "ArkNet & ISB",
-          desc: "Scalable REST APIs, webhook event routing (~1m → ~2s), and secure input validation."
+          desc: "REST APIs & ~2s webhook routing"
         },
         {
-          name: "Redis & BullMQ Background Jobs",
+          name: "Redis & BullMQ Queues",
           tag: "9 Worker Queues",
           project: "ArkNet Platform",
-          desc: "Caching, fast feed ranking scripts, and background job processing so user pages stay fast."
+          desc: "Atomic Lua ranking & async workers"
         },
         {
           name: "Real-Time WebSockets (Socket.IO)",
           tag: "Live Updates",
           project: "ArkNet Platform",
-          desc: "Instant live notifications, presence, and multi-server messaging."
+          desc: "Presence & multi-server push"
         }
       ]
     },
     {
       id: "ai",
-      name: "AI Tools & Automation",
+      name: "AI & Automation",
       skills: [
         {
           name: "Multi-Agent Systems (MCP)",
           tag: "~8h Work → 5m",
           project: "ISB Vietnam",
-          desc: "Coordinating multiple specialized AI agents with isolated data sandboxes and automated fact checks."
+          desc: "Orchestrator + sandboxed sub-agents"
         },
         {
-          name: "n8n, Gemini API & Prompt Design",
+          name: "n8n, Gemini API & Prompting",
           tag: "Workflow Auto",
           project: "ISB & News AI",
-          desc: "End-to-end automated workflows connecting web data, LLMs, and reliable JSON outputs."
+          desc: "Structured JSON pipelines"
+        },
+        {
+          name: "Puppeteer Scraping & TTS",
+          tag: "27.1h Corpus",
+          project: "News AI Voice",
+          desc: "News crawl & async audio jobs"
         }
       ]
     },
@@ -300,37 +307,67 @@ export const skillsData = {
           name: "PostgreSQL & Drizzle ORM",
           tag: "Primary Database",
           project: "ArkNet & ISB",
-          desc: "Clean relational table design, connection pooling, and safe schema migrations."
+          desc: "Schema design, pooling & migrations"
         },
         {
-          name: "HashiCorp Vault & Data Protection",
+          name: "HashiCorp Vault & PII Crypto",
           tag: "23/24 Sec Fixes",
           project: "ISB HR Platform",
-          desc: "Encrypting sensitive employee PII fields while still keeping exact database search fast."
+          desc: "Field DEK wrapping & blind indexes"
         },
         {
           name: "SQL Server (MSSQL)",
           tag: "30+ Table Schema",
           project: "PetCareX",
-          desc: "Normalized relational modeling, index optimization, triggers, and stored procedures."
+          desc: "COMB UUID indexes & stored procs"
         }
       ]
     },
     {
-      id: "devops",
-      name: "Cloud, DevOps & Automated QA",
+      id: "qa",
+      name: "QA & Load Engineering",
       skills: [
         {
-          name: "Docker & Kubernetes Scaling",
-          tag: "2 → 10 Replicas",
-          project: "ArkNet & ISB CI",
-          desc: "Containerized apps, automatic server scaling during traffic spikes, and fast CI test containers."
+          name: "Playwright E2E & POM",
+          tag: "117 Matrix Runs",
+          project: "EShop QA Suite",
+          desc: "Cross-browser checkout regression"
         },
         {
-          name: "Playwright, Vitest & k6 Testing",
+          name: "k6 Stress & Newman CI",
+          tag: "500-VU Verified",
+          project: "ArkNet & EShop",
+          desc: "Soak latency & API contract gates"
+        },
+        {
+          name: "Vitest + Testcontainers",
           tag: "5,600+ Tests",
+          project: "ISB Vietnam CI",
+          desc: "Isolated parallel Postgres suites"
+        }
+      ]
+    },
+    {
+      id: "cloud",
+      name: "Cloud & Infrastructure",
+      skills: [
+        {
+          name: "Kubernetes HPA Scaling",
+          tag: "2 → 10 Replicas",
+          project: "ArkNet Platform",
+          desc: "CPU-based pod autoscaling & health"
+        },
+        {
+          name: "Docker & GitHub Actions",
+          tag: "54% Faster CI",
           project: "ISB & EShop QA",
-          desc: "Automated browser journeys, API checks, and high-concurrency stress tests before shipping."
+          desc: "Parallel build & artifact pipelines"
+        },
+        {
+          name: "Nginx Gateway & ReDoS Guard",
+          tag: "<0.2s Parsing",
+          project: "ArkNet & ISB",
+          desc: "Rate limits & linear-time regex"
         }
       ]
     }

@@ -1,4 +1,4 @@
-# ⚡ wokovn — Software Engineer Portfolio
+# ⚡ wokovn | Software Engineer Portfolio
 
 Personal Developer Portfolio of **Nguyễn Anh Khoa (@wokovn)**, Software Engineer specializing in Full-Stack Distributed Systems, Multi-Agent AI, and High-Throughput Backends.
 

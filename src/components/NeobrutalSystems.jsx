@@ -14,71 +14,56 @@ const CHAPTERS = [
   {
     id: 0,
     num: '01',
-    tag: 'SCALABILITY PROJECT',
+    tag: 'SCALABILITY',
     title: 'ArkNet: Scalable Social Media Platform',
-    plainSummary:
-      'Built a fast social feed backend so heavy traffic surges do not crash the site or slow down uploads.',
-    problem:
-      'With 350 people online at once, 2 fixed servers hit 100% load and failed nearly 1 in 3 requests.',
-    solution:
-      'Configured Kubernetes to auto-scale up to 10 servers during bursts and moved heavy media/ranking tasks to background workers.',
-    outcome: '2.4x higher throughput · Error rate cut from 28.4% to 0.8%',
+    plainSummary: 'Auto-scaled social feed backend for high traffic spikes.',
+    problem: '2 fixed servers failed 28.4% of requests at 350 concurrent users.',
+    solution: 'K8s HPA scaling (2→10 pods) + 9 async BullMQ + Redis Lua queues.',
+    outcome: '2.4x throughput · Error rate 28.4% → 0.8%',
     repo: 'https://github.com/wokovn/SocialMediaProject'
   },
   {
     id: 1,
     num: '02',
-    tag: 'AI WORKFLOW · ISB VIETNAM',
+    tag: 'AI AGENTS · ISB',
     title: 'Multi-Agent Company Data Assistant',
-    plainSummary:
-      'Built a team of collaborating AI agents that read company documents and analyze spreadsheets automatically.',
-    problem:
-      'Checking dozens of internal tables and policy documents manually took ~8 hours per request.',
-    solution:
-      'Designed 1 Orchestrator splitting tasks across 4 specialized Helper Agents working safely in read-only memory sandboxes.',
-    outcome: 'Cut ~8h manual analysis down to ~5 minutes (5.8x data rows)',
+    plainSummary: 'AI agent team querying company tables and SOP docs.',
+    problem: 'Manual multi-table & doc analysis took ~8h per request.',
+    solution: '1 Orchestrator + 4 Helper Agents in read-only SQLite sandboxes.',
+    outcome: '~8h → ~5 mins · 5.8x more rows analyzed',
     repo: null
   },
   {
     id: 2,
     num: '03',
-    tag: 'SECURITY & SPEED · ISB VIETNAM',
+    tag: 'SECURITY · ISB',
     title: 'Enterprise HR Security & Contract Speedup',
-    plainSummary:
-      'Protected sensitive employee contract details with encryption while fixing multi-second page freezes.',
-    problem:
-      'HR data had to be searchable without exposing plaintext PII, and slow contract text parsers stalled pages for 3–18 seconds.',
-    solution:
-      'Integrated HashiCorp Vault encryption with searchable blind hashes and rewrote slow regex logic to run linearly.',
-    outcome: '23/24 security fixes · Delays cut from 3–18s down to <0.2s',
+    plainSummary: 'Encrypted HR PII contracts + fixed multi-second CPU stalls.',
+    problem: 'Sensitive PII needed searchability; legacy regex froze pages 3–18s.',
+    solution: 'HashiCorp Vault DEK wrapping + HMAC blind index + linear parser.',
+    outcome: '23/24 security fixes · Delays 3–18s → <0.2s',
     repo: null
   },
   {
     id: 3,
     num: '04',
-    tag: 'TESTING & DATABASES',
+    tag: 'QA & DATABASES',
     title: 'EShop Automated QA & PetCareX Database',
-    plainSummary:
-      'Created automated test suites catching bugs early, plus a fast multi-branch veterinary database.',
-    problem:
-      'Manual checks missed concurrency bugs, and random database IDs slowed down storage inserts.',
-    solution:
-      'Built 117 cross-browser Playwright runs + 150+ API checks + 500-user k6 load curves alongside 5,600+ Vitest Docker CI tests.',
-    outcome: 'Caught 7 real bugs · Cut CI wait time by 54% (352s → 162s)',
+    plainSummary: 'Cross-browser E2E + 500-VU load suite & Docker Vitest CI.',
+    problem: 'Manual QA missed bugs; random UUIDs slowed DB inserts & CI waits.',
+    solution: '117 Playwright + 150+ API + k6 suites + 5.6K Docker Vitest CI.',
+    outcome: 'Caught 7 bugs · CI wait cut 54% (352s → 162s)',
     repo: 'https://github.com/wokovn/Group06_HW2_Testing'
   },
   {
     id: 4,
     num: '05',
-    tag: 'AI VOICE & NEWS PIPELINE',
-    title: 'Vietnamese News Reader & AI Voice (Listen Live)',
-    plainSummary:
-      'Collects daily news, summarizes key points with Gemini AI, and reads them aloud using trained Vietnamese AI voices.',
-    problem:
-      'Generating realistic regional Vietnamese speech takes time and would stall normal web requests if run synchronously.',
-    solution:
-      'Used background job polling so users never hit timeouts, backed by real Phase 3 VieNeu-TTS audio samples you can listen to on the right.',
-    outcome: 'Real Phase 3 AI voice outputs trained on 27.1h Vietnamese speech',
+    tag: 'AI VOICE PIPELINE',
+    title: 'Vietnamese News Reader & AI Voice',
+    plainSummary: 'Scrapes daily news, summarizes via Gemini, reads aloud cleanly.',
+    problem: 'Regional neural TTS inference timed out synchronous HTTP routes.',
+    solution: 'Async polling pipeline backed by trained VieNeu-TTS WAV outputs.',
+    outcome: '27.1h speech corpus · Playable Phase 3 WAVs',
     repo: 'https://github.com/wokovn/Project-LT-ML-23KHDL1-HCMUS'
   }
 ];
